@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud FondoRapi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 20px; margin: 0; }
+        .main-card { background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; overflow: hidden; min-height: 700px; position: relative; }
+        .signature-area { cursor: crosshair; touch-action: none; }
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.4s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .legal-box { scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9; }
+        .legal-box::-webkit-scrollbar { width: 6px; }
+        .radio-selected { background-color: #eff6ff; border-color: #2563eb; color: #1e40af; }
+        .code-input { letter-spacing: 0.5em; text-align: center; font-size: 1.2rem; }
+        .upload-box { border: 2px dashed #cbd5e1; transition: all 0.3s; }
+        .upload-box:hover { border-color: #2563eb; background-color: #f8fafc; }
+        .file-ok { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
+
+        /* Camera Modal */
+        #camera-modal {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.92); z-index: 9999;
+            flex-direction: column; align-items: center;
+            justify-content: center; padding: 16px;
+        }
+        #camera-modal.open { display: flex; }
+        #camera-video {
+            width: 100%; max-width: 480px; border-radius: 12px;
+            background: #000; aspect-ratio: 4/3; object-fit: cover;
+        }
+        .cam-guide-overlay {
+            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            pointer-events: none; border-radius: 12px; overflow: hidden;
+        }
+        .guide-id {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 82%; height: 56%;
+            border: 3px solid rgba(255,255,255,0.8); border-radius: 10px;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+        }
+        .guide-selfie {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%; height: 80%;
+            border: 3px solid rgba(255,255,255,0.8); border-radius: 50%;
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
+        }
+        .video-container { position: relative; width: 100%; max-width: 480px; }
+        .cam-label { color: white; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 10px; background: rgba(37,99,235,0.85); padding: 6px 18px; border-radius: 20px; }
+        .cam-hint { color: rgba(255,255,255,0.75); font-size: 11px; text-align: center; margin-top: 8px; }
+        #preview-canvas { display: none; }
+        .doc-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px; margin-bottom: 16px; background: #fafafa; transition: border-color 0.3s; }
+        .doc-card.captured { border-color: #22c55e; background: #f0fdf4; }
+        .doc-thumb { width: 80px; height: 52px; object-fit: cover; border-radius: 6px; border: 1px solid #e2e8f0; display: none; }
+        .doc-thumb.visible { display: block; }
+        .capture-btn { width: 64px; height: 64px; border-radius: 50%; background: white; border: 5px solid rgba(255,255,255,0.5); cursor: pointer; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
+        .capture-btn:active { transform: scale(0.93); }
+        .capture-inner { width: 48px; height: 48px; border-radius: 50%; background: white; }
+    </style>
+</head>
+<body>
+
+    <!-- ===== CAMERA MODAL ===== -->
+    <div id="camera-modal">
+        <div class="cam-label" id="cam-modal-label">📷 Capturando foto</div>
+        <div class="video-container">
+            <video id="camera-video" autoplay playsinline muted></video>
+            <div class="cam-guide-overlay">
+                <div id="cam-guide-shape"></div>
+            </div>
+        </div>
+        <canvas id="preview-canvas"></canvas>
+        <p class="cam-hint" id="cam-hint-text">Centra el documento dentro del marco</p>
+        <div class="flex gap-4 mt-5 items-center">
+            <button onclick="closeCameraModal()" class="bg-gray-600 text-white px-5 py-2 rounded-lg text-sm font-bold">Cancelar</button>
+            <button class="capture-btn" onclick="capturePhoto()">
+                <div class="capture-inner"></div>
+            </button>
+            <button onclick="switchCamera()" class="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-bold">🔄 Cam</button>
+        </div>
+    </div>
+
+    <div class="main-card">
+
+        <!-- PANTALLA DE CIERRE -->
+        <div id="closed-screen" class="absolute inset-0 bg-gray-50 z-50 flex flex-col items-center justify-center text-center p-6 backdrop-blur-sm hidden">
+            <div class="bg-white p-8 rounded-xl shadow-xl border border-gray-200 max-w-sm">
+                <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">Solicitudes Cerradas</h2>
+                <div class="mt-4 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                    <ul class="text-sm font-semibold text-blue-800 space-y-2 text-left px-4 list-disc">
+                        <li>Del 6 al 10 de cada mes</li>
+                        <li>Del 21 al 25 de cada mes</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ENCABEZADO -->
+        <div class="bg-blue-900 p-4 text-white text-center relative z-10">
+            <h1 class="text-xl font-bold tracking-wide">FondoRapi</h1>
+            <p class="text-blue-200 text-xs mt-1">Solicitud de Crédito y Adelantos</p>
+        </div>
+
+        <div id="date-message-container" class="hidden transition-all duration-300"></div>
+
+        <!-- CONTENIDO DEL FORMULARIO -->
+        <div id="form-content" class="hidden">
+
+            <!-- BARRA DE PROGRESO -->
+            <div class="flex justify-between px-4 py-3 bg-gray-50 border-b text-[10px] font-bold uppercase tracking-wide text-center">
+                <span id="prog-1" class="text-blue-600">1. Legal</span>
+                <span id="prog-2" class="text-gray-400">2. Datos</span>
+                <span id="prog-3" class="text-gray-400">3. Docs</span>
+                <span id="prog-4" class="text-gray-400">4. Firma</span>
+            </div>
+
+            <form id="loanForm" class="p-5" onsubmit="return false;">
+
+                <!-- PASO 1: LEGAL -->
+                <div id="step1" class="step active">
+                    <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase">Política de Tratamiento de Datos</h2>
+                    <div class="h-40 overflow-y-auto p-3 bg-gray-50 border border-gray-200 rounded text-xs text-gray-600 mb-4 text-justify legal-box leading-relaxed">
+                        <p class="mb-2"><strong>RAPIASEO SAS</strong>, con domicilio en Cali, Colombia, es responsable del tratamiento de los datos personales suministrados a través de este formulario. La información será utilizada para los fines asociados al proceso de selección, contacto, gestión administrativa y demás actividades relacionadas con la operación de la empresa. Los datos serán almacenados de forma segura y no serán compartidos con terceros sin autorización previa, salvo en los casos legalmente permitidos. Al continuar y enviar este formulario, usted declara que ha leído, comprende y autoriza el tratamiento de sus datos personales conforme a esta política.</p>
+                    </div>
+                    <div class="flex items-center mb-5 bg-blue-50 p-3 rounded-lg border border-blue-100">
+                        <input id="accept" type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                        <label for="accept" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer">He leído y acepto la política de datos.</label>
+                    </div>
+                    <div class="text-right">
+                        <button type="button" onclick="window.validateStep1()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm transition shadow-sm cursor-pointer">Continuar &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- PASO 2: DATOS -->
+                <div id="step2" class="step">
+                    <h2 class="text-sm font-bold mb-4 text-gray-800 uppercase border-b pb-2">Configuración de Solicitud</h2>
+                    <div class="mb-5">
+                        <label class="block text-xs font-semibold text-gray-600 mb-2">¿Qué necesitas hoy? *</label>
+                        <div class="grid grid-cols-2 gap-3">
+                            <label class="cursor-pointer border-2 border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-all text-center group" id="opt-credito" onclick="window.selectType('Credito')">
+                                <input type="radio" name="tipoSolicitud" value="Credito" class="hidden">
+                                <div class="font-bold text-sm text-gray-700 group-hover:text-blue-600">Crédito</div>
+                                <div class="text-[10px] text-gray-400 mt-1">Libranza (1-6 cuotas)</div>
+                            </label>
+                            <label class="cursor-pointer border-2 border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-all text-center group" id="opt-adelanto" onclick="window.selectType('Adelanto')">
+                                <input type="radio" name="tipoSolicitud" value="Adelanto" class="hidden">
+                                <div class="font-bold text-sm text-gray-700 group-hover:text-blue-600">Adelanto Nómina</div>
+                                <div class="text-[10px] text-gray-400 mt-1">Max $250.000 (1 cuota)</div>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre *</label>
+                            <input type="text" id="nombre" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Apellidos *</label>
+                            <input type="text" id="apellidos" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Cédula *</label>
+                            <input type="number" id="cedula" placeholder="Sin puntos" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Celular *</label>
+                            <input type="number" id="telefono" placeholder="300..." class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Correo Electrónico *</label>
+                        <input type="email" id="email" placeholder="ejemplo@rapiaseo.com" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
+                        <p class="text-[10px] text-red-500 font-bold mt-1">IMPORTANTE: Debe ser el correo registrado en RAPIASEO S.A.S.</p>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Cuenta de Desembolso</label>
+                        <div class="w-full p-2 border border-gray-200 bg-gray-50 rounded text-sm text-gray-500 italic">Registrada en la nómina de la empresa</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4 mb-2">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Monto Solicitado *</label>
+                            <input type="text" id="monto" placeholder="Ej: 200.000" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="window.handleMontoInput(this)">
+                            <p id="monto-hint" class="text-[10px] text-gray-400 mt-1">Mínimo $100.000</p>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-600 mb-1">Plazo *</label>
+                            <select id="cuotas" class="w-full p-2 border border-gray-300 rounded bg-white text-sm outline-none disabled:bg-gray-100 disabled:text-gray-500" onchange="window.calculateSimulation()">
+                                <option value="1">1 Cuota</option>
+                                <option value="2">2 Cuotas</option>
+                                <option value="3">3 Cuotas</option>
+                                <option value="4">4 Cuotas</option>
+                                <option value="5">5 Cuotas</option>
+                                <option value="6">6 Cuotas</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="simulacion-box" class="mb-6 bg-gray-100 p-3 rounded-lg border border-gray-200 hidden">
+                        <h3 class="text-xs font-bold text-gray-700 mb-2 uppercase border-b border-gray-300 pb-1">Proyección de Pagos</h3>
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-600">Cuota Aproximada:</span>
+                            <span id="sim-valor-cuota" class="text-sm font-bold text-blue-700">$ 0</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs text-gray-600">Total a Pagar:</span>
+                            <span id="sim-total-pagar" class="text-xs font-bold text-gray-800">$ 0</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between border-t pt-4">
+                        <button type="button" onclick="window.prevStep(1)" class="text-gray-500 text-sm font-medium hover:text-gray-700 px-2 cursor-pointer">Atrás</button>
+                        <button type="button" onclick="window.validateStep2()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm cursor-pointer">Siguiente</button>
+                    </div>
+                </div>
+
+                <!-- PASO 3: DOCUMENTOS -->
+                <div id="step3" class="step">
+                    <h2 class="text-sm font-bold mb-1 text-gray-800 uppercase border-b pb-2">Verificación de Identidad</h2>
+                    <p class="text-xs text-gray-500 mb-4 mt-2">Toma las fotos o sube archivos (máx 5MB c/u)</p>
+
+                    <!-- CÉDULA CARA FRONTAL -->
+                    <div class="doc-card" id="card-cedula-front">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">1. Cédula — Cara Frontal <span class="text-red-500">*</span></p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Parte con tu foto y nombre</p>
+                            </div>
+                            <img id="thumb-cedula-front" class="doc-thumb" alt="Cara frontal">
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="openCamera('cedula-front')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+                                📷 Tomar Foto
+                            </button>
+                            <label class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-600 py-2 rounded-lg text-xs font-bold hover:border-blue-400 hover:text-blue-600 cursor-pointer transition">
+                                📁 Subir Archivo
+                                <input type="file" class="hidden" accept="image/*,application/pdf" onchange="handleFileUpload(this, 'cedula-front')">
+                            </label>
+                        </div>
+                        <p id="status-cedula-front" class="text-[10px] text-gray-400 mt-2 text-center">Sin captura</p>
+                    </div>
+
+                    <!-- CÉDULA CARA POSTERIOR -->
+                    <div class="doc-card" id="card-cedula-back">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">2. Cédula — Cara Posterior <span class="text-red-500">*</span></p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Parte trasera con el código de barras</p>
+                            </div>
+                            <img id="thumb-cedula-back" class="doc-thumb" alt="Cara posterior">
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="openCamera('cedula-back')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
+                                📷 Tomar Foto
+                            </button>
+                            <label class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-600 py-2 rounded-lg text-xs font-bold hover:border-blue-400 hover:text-blue-600 cursor-pointer transition">
+                                📁 Subir Archivo
+                                <input type="file" class="hidden" accept="image/*,application/pdf" onchange="handleFileUpload(this, 'cedula-back')">
+                            </label>
+                        </div>
+                        <p id="status-cedula-back" class="text-[10px] text-gray-400 mt-2 text-center">Sin captura</p>
+                    </div>
+
+                    <!-- SELFIE CON CÉDULA -->
+                    <div class="doc-card" id="card-selfie">
+                        <div class="flex items-center justify-between mb-2">
+                            <div>
+                                <p class="text-xs font-bold text-gray-800">3. Selfie sosteniendo la Cédula <span class="text-red-500">*</span></p>
+                                <p class="text-[10px] text-gray-400 mt-0.5">Tu rostro visible junto a tu cédula</p>
+                            </div>
+                            <img id="thumb-selfie" class="doc-thumb" alt="Selfie">
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="openCamera('selfie')" class="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">
+                                🤳 Cámara Frontal
+                            </button>
+                            <label class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-600 py-2 rounded-lg text-xs font-bold hover:border-indigo-400 hover:text-indigo-600 cursor-pointer transition">
+                                📁 Subir Foto
+                                <input type="file" class="hidden" accept="image/*" onchange="handleFileUpload(this, 'selfie')">
+                            </label>
+                        </div>
+                        <p id="status-selfie" class="text-[10px] text-gray-400 mt-2 text-center">Sin captura</p>
+                    </div>
+
+                    <div class="flex justify-between border-t pt-4">
+                        <button type="button" onclick="window.prevStep(2)" class="text-gray-500 text-sm font-medium hover:text-gray-700 px-2 cursor-pointer">Atrás</button>
+                        <button type="button" onclick="window.validateStep3()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm cursor-pointer">Siguiente</button>
+                    </div>
+                </div>
+
+                <!-- PASO 4: FIRMA Y VERIFICACIÓN -->
+                <div id="step4" class="step">
+                    <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase">Autorización y Firma</h2>
+                    <div class="mb-3 border border-yellow-400 rounded-lg overflow-hidden bg-white shadow-sm">
+                        <button type="button" onclick="window.toggleLegalText()" class="w-full bg-yellow-50 p-3 text-left flex justify-between items-center outline-none">
+                            <span class="text-xs font-bold text-yellow-800">LEER ANTES DE FIRMAR (Clic aquí)</span>
+                        </button>
+                        <div id="legal-content" class="hidden border-t border-yellow-200 bg-yellow-50/50 p-3">
+                            <p class="text-xs text-gray-700 leading-tight text-justify">Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del presente documento autorizo expresamente a la sociedad para que descuente de mis salarios y/o prestaciones sociales la suma total proyectada. Firmo en señal de aceptación.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start mb-4 px-1">
+                        <input id="accept-legal-step3" type="checkbox" class="mt-1 h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 cursor-pointer">
+                        <label for="accept-legal-step3" class="ml-2 text-xs font-bold text-gray-700 cursor-pointer">Declaro que he leído y acepto la autorización de descuento. <span class="text-red-500">*</span></label>
+                    </div>
+                    <label class="block text-xs font-bold text-gray-700 mb-1">Firme aquí: <span class="text-red-500">*</span></label>
+                    <div id="signature-wrapper" class="w-full h-32 bg-white border-2 border-dashed border-gray-300 rounded-lg relative overflow-hidden shadow-inner mb-2 touch-none">
+                        <canvas id="signature-pad" class="absolute inset-0 w-full h-full signature-area"></canvas>
+                    </div>
+                    <div class="flex justify-end mb-4">
+                        <button type="button" onclick="window.clearSignature()" class="text-xs text-red-500 font-bold hover:text-red-700 cursor-pointer">Limpiar Firma</button>
+                    </div>
+                    <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-lg mb-6">
+                        <h3 class="text-xs font-bold text-indigo-900 mb-2 uppercase">Verificación</h3>
+                        <div id="area-pedir-codigo">
+                            <p class="text-xs text-indigo-800 mb-3">Enviaremos un código a su correo.</p>
+                            <button type="button" onclick="window.requestVerificationCode()" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 text-sm font-bold transition shadow-sm">Enviar Código</button>
+                        </div>
+                        <div id="area-ingresar-codigo" class="hidden">
+                            <p class="text-xs text-indigo-800 mb-2">Ingrese el código de 4 dígitos:</p>
+                            <input type="text" id="verification-code" maxlength="4" placeholder="0000" class="w-full p-2 border border-indigo-300 rounded text-indigo-900 font-bold code-input focus:ring-2 focus:ring-indigo-500 outline-none mb-3 bg-white">
+                        </div>
+                    </div>
+                    <div class="flex justify-between border-t pt-4">
+                        <button type="button" onclick="window.prevStep(3)" class="text-gray-500 text-sm font-medium hover:text-gray-700 px-2 cursor-pointer">Atrás</button>
+                        <button id="btn-submit-final" type="button" onclick="window.submitForm()" class="bg-gray-400 text-white px-6 py-2 rounded-lg font-medium text-sm flex items-center gap-2 shadow-md cursor-not-allowed transition-all" disabled><span>Enviar Solicitud</span></button>
+                    </div>
+                </div>
+
+                <!-- PANTALLA ÉXITO -->
+                <div id="successStep" class="hidden text-center py-10">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-gray-800 mb-2">¡Solicitud Exitosa!</h2>
+                    <p class="text-gray-600 text-sm mb-4 px-4">Documentos subidos y solicitud enviada correctamente.</p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CARGA -->
+    <div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-60 hidden flex items-center justify-center z-50 backdrop-blur-sm">
+        <div class="bg-white p-6 rounded-xl shadow-2xl flex flex-col items-center max-w-xs mx-4">
+            <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-blue-600 mb-3"></div>
+            <p id="loadingText" class="text-gray-800 text-sm font-semibold">Procesando...</p>
+        </div>
+    </div>
+
+    <script>
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwylV7XEmH_RZoEq2ENGUD5vyP0h3Tuu0B03FgTjNgo5VkZwKcNU6PZzl1BBS47AbXl8A/exec";
+
+        // =====================================================
+        //  ESTADO GLOBAL DE CAPTURAS
+        // =====================================================
+        const captures = { 'cedula-front': null, 'cedula-back': null, 'selfie': null };
+
+        // =====================================================
+        //  CÁMARA
+        // =====================================================
+        let cameraStream = null;
+        let currentCaptureTarget = null;
+        let currentFacingMode = 'environment';
+
+        const cameraModal   = document.getElementById('camera-modal');
+        const cameraVideo   = document.getElementById('camera-video');
+        const previewCanvas = document.getElementById('preview-canvas');
+        const camLabel      = document.getElementById('cam-modal-label');
+        const camHint       = document.getElementById('cam-hint-text');
+        const camGuide      = document.getElementById('cam-guide-shape');
+
+        async function openCamera(target) {
+            currentCaptureTarget = target;
+            const isSelfie = target === 'selfie';
+            currentFacingMode = isSelfie ? 'user' : 'environment';
+            camLabel.textContent = isSelfie ? '🤳 Selfie con Cédula' : target === 'cedula-front' ? '📷 Cédula — Cara Frontal' : '📷 Cédula — Cara Posterior';
+            camHint.textContent  = isSelfie ? 'Sostén la cédula junto a tu rostro' : 'Centra la cédula dentro del marco blanco';
+            camGuide.className   = isSelfie ? 'guide-selfie' : 'guide-id';
+            cameraModal.classList.add('open');
+            await startStream();
+        }
+
+        async function startStream() {
+            if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { facingMode: currentFacingMode, width: { ideal: 1280 }, height: { ideal: 960 } }, audio: false
+                });
+                cameraVideo.srcObject = cameraStream;
+            } catch(e) {
+                alert("No se pudo acceder a la cámara: " + e.message);
+                closeCameraModal();
+            }
+        }
+
+        async function switchCamera() {
+            currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
+            await startStream();
+        }
+
+        function capturePhoto() {
+            const video = cameraVideo;
+            previewCanvas.width  = video.videoWidth  || 1280;
+            previewCanvas.height = video.videoHeight || 960;
+            const ctx2 = previewCanvas.getContext('2d');
+            if (currentFacingMode === 'user') { ctx2.translate(previewCanvas.width, 0); ctx2.scale(-1, 1); }
+            ctx2.drawImage(video, 0, 0, previewCanvas.width, previewCanvas.height);
+            previewCanvas.toBlob(blob => { saveCapture(currentCaptureTarget, blob); closeCameraModal(); }, 'image/jpeg', 0.88);
+        }
+
+        function closeCameraModal() {
+            if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
+            cameraModal.classList.remove('open');
+        }
+
+        function saveCapture(target, blob) {
+            captures[target] = blob;
+            const url = URL.createObjectURL(blob);
+            const thumb  = document.getElementById('thumb-' + target);
+            const status = document.getElementById('status-' + target);
+            const card   = document.getElementById('card-' + target);
+            if (thumb)  { thumb.src = url; thumb.classList.add('visible'); }
+            if (status) { status.textContent = '✅ Capturado correctamente'; status.classList.add('text-green-600'); status.classList.remove('text-gray-400'); }
+            if (card)   { card.classList.add('captured'); }
+        }
+
+        function handleFileUpload(input, target) {
+            if (!input.files || !input.files[0]) return;
+            const file = input.files[0];
+            if (file.size > 5.5 * 1024 * 1024) { alert("Archivo muy pesado (máx 5MB)."); return; }
+            captures[target] = file;
+            const card   = document.getElementById('card-' + target);
+            const status = document.getElementById('status-' + target);
+            const thumb  = document.getElementById('thumb-' + target);
+            if (card)   card.classList.add('captured');
+            if (status) { status.textContent = '✅ ' + file.name.substring(0, 22); status.classList.add('text-green-600'); status.classList.remove('text-gray-400'); }
+            if (file.type.startsWith('image/') && thumb) { thumb.src = URL.createObjectURL(file); thumb.classList.add('visible'); }
+        }
+
+        // =====================================================
+        //  HELPERS
+        // =====================================================
+        let hasSigned   = false;
+        let currentType = "";
+        let startTime   = new Date().toLocaleString('es-CO');
+        let userIp      = "No detectada";
+
+        function getRawMonto() { const val = document.getElementById('monto').value.replace(/\./g, ''); return val ? parseInt(val) : 0; }
+        function formatMoney(amount) { return '$ ' + Math.round(amount).toLocaleString('es-CO'); }
+
+        window.handleMontoInput = function(input) {
+            let value = input.value.replace(/\D/g, '');
+            input.value = value !== "" ? new Intl.NumberFormat('es-CO').format(value) : "";
+            window.calculateSimulation();
+        };
+
+        window.calculateSimulation = function() {
+            const monto = getRawMonto();
+            const cuotas = parseInt(document.getElementById('cuotas').value) || 1;
+            const simBox = document.getElementById('simulacion-box');
+            if (monto < 50000) { simBox.classList.add('hidden'); return; }
+            simBox.classList.remove('hidden');
+            const tasaInteres = 0.022; const costoAdmin = 3600;
+            const totalPagar = monto * (1 + (tasaInteres * cuotas)) + (costoAdmin * cuotas);
+            document.getElementById('sim-valor-cuota').innerText = formatMoney(totalPagar / cuotas);
+            document.getElementById('sim-total-pagar').innerText  = formatMoney(totalPagar);
+        };
+
+        window.selectType = function(type) {
+            currentType = type;
+            document.getElementById('opt-credito').classList.remove('radio-selected');
+            document.getElementById('opt-adelanto').classList.remove('radio-selected');
+            const radios = document.getElementsByName('tipoSolicitud');
+            for(let r of radios) { if(r.value === type) r.checked = true; }
+            document.getElementById(type === 'Credito' ? 'opt-credito' : 'opt-adelanto').classList.add('radio-selected');
+            const selectCuotas = document.getElementById('cuotas');
+            const hintMonto    = document.getElementById('monto-hint');
+            if (type === 'Adelanto') { selectCuotas.value = "1"; selectCuotas.disabled = true; hintMonto.innerText = "Mínimo $100.000 - Máximo $250.000"; }
+            else { selectCuotas.disabled = false; hintMonto.innerText = "Mínimo $100.000 - Máximo sugerido $500.000"; }
+            window.calculateSimulation();
+        };
+
+        window.addEventListener('load', () => {
+            window.selectType('Credito');
+            window.checkDateAccess();
+            fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => userIp = d.ip).catch(() => {});
+        });
+
+        window.toggleLegalText = function() { document.getElementById('legal-content').classList.toggle('hidden'); };
+
+        window.checkDateAccess = function() {
+            const day = new Date().getDate();
+            const isFirstCut  = (day >= 6  && day <= 10);
+            const isSecondCut = (day >= 21 && day <= 25);
+            const isAllowed   = true; // Cambiar a false para activar bloqueo
+            if (isAllowed) {
+                document.getElementById('closed-screen').classList.add('hidden');
+                document.getElementById('form-content').classList.remove('hidden');
+                const msg = document.getElementById('date-message-container');
+                if (isFirstCut)       { msg.classList.remove('hidden'); msg.innerHTML = `<div class="bg-blue-100 border-l-4 border-blue-600 text-blue-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">📅 CORTE 1: (6 al 10)</div>`; }
+                else if (isSecondCut) { msg.classList.remove('hidden'); msg.innerHTML = `<div class="bg-orange-100 border-l-4 border-orange-500 text-orange-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">⚠️ CORTE 2: (21 al 25)</div>`; }
+            } else {
+                document.getElementById('closed-screen').classList.remove('hidden');
+                document.getElementById('form-content').classList.add('hidden');
+            }
+        };
+
+        window.showStep = function(n) {
+            document.querySelectorAll('.step').forEach(e => e.classList.remove('active'));
+            document.getElementById('step' + n).classList.add('active');
+            for(let i = 1; i <= 4; i++) {
+                document.getElementById('prog-' + i).classList.toggle('text-blue-600', i <= n);
+                document.getElementById('prog-' + i).classList.toggle('text-gray-400',  i > n);
+            }
+        };
+
+        window.validateStep1 = function() { if(!document.getElementById('accept').checked) return alert("Debe aceptar la política."); window.showStep(2); };
+
+        window.validateStep2 = function() {
+            if(!currentType) return alert("Seleccione Crédito o Adelanto.");
+            if(!document.getElementById('nombre').value || !document.getElementById('cedula').value || !document.getElementById('email').value || !document.getElementById('monto').value) return alert("Complete todos los campos.");
+            if(!document.getElementById('email').value.includes('@')) return alert("Email inválido.");
+            const monto = getRawMonto();
+            if(monto < 100000) return alert("Monto mínimo $100.000");
+            if(currentType === 'Adelanto' && monto > 250000) return alert("Máximo $250.000 para Adelanto");
+            window.showStep(3);
+        };
+
+        window.validateStep3 = function() {
+            if(!captures['cedula-front']) return alert("Falta la foto de la cara FRONTAL de la cédula.");
+            if(!captures['cedula-back'])  return alert("Falta la foto de la cara POSTERIOR de la cédula.");
+            if(!captures['selfie'])       return alert("Falta la selfie con la cédula.");
+            window.showStep(4);
+            setTimeout(window.resizeCanvas, 100);
+        };
+
+        window.prevStep = function(n) { window.showStep(n); };
+
+        // --- FIRMA ---
+        const canvas  = document.getElementById('signature-pad');
+        const ctx     = canvas.getContext('2d');
+        const wrapper = document.getElementById('signature-wrapper');
+        let isDrawing = false;
+
+        window.resizeCanvas = function() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width  = wrapper.offsetWidth  * ratio;
+            canvas.height = wrapper.offsetHeight * ratio;
+            ctx.scale(ratio, ratio);
+        };
+        new ResizeObserver(window.resizeCanvas).observe(wrapper);
+
+        function getPos(e) { const r = canvas.getBoundingClientRect(); let x = e.touches?e.touches[0].clientX:e.clientX; let y = e.touches?e.touches[0].clientY:e.clientY; return {x:x-r.left,y:y-r.top}; }
+        canvas.addEventListener('mousedown',  e => { isDrawing=true; hasSigned=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); });
+        canvas.addEventListener('mousemove',  e => { if(!isDrawing)return; ctx.lineWidth=2; ctx.lineCap='round'; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); });
+        canvas.addEventListener('mouseup',    ()  => { isDrawing=false; });
+        canvas.addEventListener('touchstart', e => { e.preventDefault(); isDrawing=true; hasSigned=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); }, {passive:false});
+        canvas.addEventListener('touchmove',  e => { if(!isDrawing)return; e.preventDefault(); ctx.lineWidth=2; ctx.lineCap='round'; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); }, {passive:false});
+        window.clearSignature = function() { ctx.clearRect(0,0,canvas.width*2,canvas.height*2); ctx.beginPath(); hasSigned=false; };
+
+        const blobToBase64 = blob => new Promise((resolve, reject) => {
+            const r = new FileReader(); r.readAsDataURL(blob);
+            r.onloadend = () => resolve(r.result.split(',')[1]); r.onerror = reject;
+        });
+
+        // =====================================================
+        //  GENERACIÓN DEL PDF LEGAL COMPLETO
+        // =====================================================
+        function generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+            const W = 210; // ancho A4
+            const margin = 20;
+            const contentW = W - margin * 2;
+            let y = 20;
+
+            // --- TÍTULO ---
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('SOLICITUD DE CRÉDITO Y LIBRANZA - FONDORAPI', W / 2, y, { align: 'center' });
+            y += 10;
+
+            // --- FECHA ---
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            const fechaLegible = new Date().toLocaleString('es-CO', { dateStyle: 'long', timeStyle: 'short' });
+            doc.text('Fecha de solicitud: ' + fechaLegible, margin, y);
+            y += 10;
+
+            // --- SECCIÓN: INFORMACIÓN DEL EMPLEADO ---
+            doc.setFillColor(240, 240, 240);
+            doc.rect(margin, y, contentW, 8, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('  INFORMACIÓN DEL EMPLEADO', margin, y + 5.5);
+            y += 12;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            const nombreCompleto = d.nombre; // ya viene con apellidos concatenados
+            doc.text('Nombre: ' + nombreCompleto, margin, y); y += 7;
+            doc.text('Cédula: ' + d.cedula, margin, y); y += 7;
+            doc.text('Celular: ' + d.telefono, margin, y); y += 7;
+            doc.text('Email: ' + d.email, margin, y); y += 7;
+            doc.text('Cuenta Desembolso: Registrada en la nómina de la empresa', margin, y); y += 12;
+
+            // --- SECCIÓN: DETALLES FINANCIEROS ---
+            doc.setFillColor(240, 240, 240);
+            doc.rect(margin, y, contentW, 8, 'F');
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('  DETALLES FINANCIEROS Y DEDUCCIONES', margin, y + 5.5);
+            y += 12;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(10);
+            doc.text('Monto Solicitado (Capital): $ ' + montoInt.toLocaleString('es-CO'), margin, y); y += 7;
+            doc.text('Plazo: ' + cuotas + ' Cuota(s)', margin, y); y += 7;
+
+            doc.setFont('helvetica', 'bold');
+            doc.text('VALOR APROXIMADO POR CUOTA: $ ' + Math.round(valorCuota).toLocaleString('es-CO'), margin, y); y += 7;
+            doc.text('TOTAL A PAGAR (Inc. Intereses + Admin): $ ' + Math.round(totalPagar).toLocaleString('es-CO'), margin, y); y += 14;
+
+            // --- SECCIÓN: AUTORIZACIÓN LEGAL ---
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('AUTORIZACIÓN DE DESCUENTO (LIBRANZA)', margin, y); y += 8;
+
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+
+            const montoFmt   = '$ ' + Math.round(totalPagar).toLocaleString('es-CO');
+            const cuotaFmt   = '$ ' + Math.round(valorCuota).toLocaleString('es-CO');
+
+            const parrafo1 =
+                'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del ' +
+                'presente documento me permito autorizar de manera expresa e irrevocable a la citada sociedad para que descuente de ' +
+                'mis salarios mensuales y/o de mis prestaciones sociales la suma total de (' + montoFmt + ') PESOS M/CTE, correspondientes ' +
+                'al capital solicitado más intereses y costos administrativos, diferido en ' + cuotas + ' cuota(s) mensuales de aproximadamente (' + cuotaFmt + ') PESOS M/CTE.';
+
+            const parrafo2 =
+                'Firmo en señal de aceptación del referido descuento para que se afecten salarios y prestaciones sociales en vigencia de ' +
+                'mi contrato de trabajo, y de igual manera, autorizo a la sociedad RAPIASEO SAS para que en caso de terminación del ' +
+                'vínculo laboral, por cualquier causa o motivo, el saldo insoluto que resultare de la deuda, sea descontado de mi ' +
+                'liquidación definitiva.';
+
+            const lines1 = doc.splitTextToSize(parrafo1, contentW);
+            doc.text(lines1, margin, y);
+            y += lines1.length * 5 + 5;
+
+            const lines2 = doc.splitTextToSize(parrafo2, contentW);
+            doc.text(lines2, margin, y);
+            y += lines2.length * 5 + 20;
+
+            // --- FIRMA ---
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(10);
+            doc.text('FIRMA:', margin, y); y += 8;
+
+            // Insertar imagen de la firma del canvas
+            try {
+                const sigData = canvas.toDataURL('image/png');
+                doc.addImage(sigData, 'PNG', margin, y, 50, 25);
+                y += 30;
+            } catch(e) { y += 30; }
+
+            // Línea y CC
+            doc.setLineWidth(0.4);
+            doc.line(margin, y, margin + 60, y);
+            y += 5;
+            doc.setFont('helvetica', 'normal');
+            doc.setFontSize(9);
+            doc.text('CC: ' + d.cedula, margin, y);
+
+            return doc;
+        }
+
+        // =====================================================
+        //  BACKEND
+        // =====================================================
+        window.requestVerificationCode = function() {
+            const email  = document.getElementById('email').value;
+            const nombre = document.getElementById('nombre').value;
+            if(!hasSigned) return alert("Firme la solicitud primero.");
+            if(!email) return alert("Falta el correo.");
+            const btn = document.querySelector("#area-pedir-codigo button");
+            btn.innerText = "Enviando..."; btn.disabled = true;
+            fetch(GOOGLE_SCRIPT_URL, {
+                method:'POST', redirect:'follow',
+                headers:{'Content-Type':'text/plain;charset=utf-8'},
+                body: JSON.stringify({ action:'sendCode', email, nombre, userIp })
+            })
+            .then(r => r.json())
+            .then(data => {
+                if(data.result === 'success') {
+                    alert("Código enviado a: " + email);
+                    document.getElementById('area-pedir-codigo').classList.add('hidden');
+                    document.getElementById('area-ingresar-codigo').classList.remove('hidden');
+                    const b = document.getElementById('btn-submit-final');
+                    b.classList.remove('bg-gray-400','cursor-not-allowed');
+                    b.classList.add('bg-green-600','hover:bg-green-700','cursor-pointer');
+                    b.disabled = false;
+                } else { throw new Error(data.message); }
+            })
+            .catch(error => {
+                let msg = "Error enviando código.";
+                if(error.message && error.message.includes("QUOTA")) msg = "Límite diario alcanzado. Intente mañana.";
+                alert(msg); btn.innerText = "Enviar Código al Correo"; btn.disabled = false;
+            });
+        };
+
+        window.submitForm = async function() {
+            const codeInput = document.getElementById('verification-code').value;
+            if(!document.getElementById('accept-legal-step3').checked) return alert("Acepte la autorización.");
+            if(!hasSigned) return alert("Firme la solicitud.");
+            if(codeInput.length !== 4) return alert("Ingrese el código.");
+
+            document.getElementById('loadingModal').classList.remove('hidden');
+            document.getElementById('loadingText').innerText = "Subiendo documentos y generando solicitud...";
+
+            const endTime = new Date().toLocaleString('es-CO');
+            const d = {
+                nombre:   document.getElementById('nombre').value + " " + document.getElementById('apellidos').value,
+                cedula:   document.getElementById('cedula').value,
+                telefono: document.getElementById('telefono').value,
+                email:    document.getElementById('email').value,
+                monto:    document.getElementById('monto').value,
+                cuotas:   document.getElementById('cuotas').value
+            };
+
+            // Calcular valores para el PDF
+            const montoInt   = getRawMonto();
+            const cuotas     = parseInt(d.cuotas);
+            const totalPagar = montoInt * (1 + (0.022 * cuotas)) + (3600 * cuotas);
+            const valorCuota = totalPagar / cuotas;
+
+            // Generar PDF legal completo
+            const doc = generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota);
+
+            try {
+                const formData = {
+                    action: 'submitApplication',
+                    verificationCode: codeInput,
+                    tipo:     currentType,
+                    nombre:   d.nombre,
+                    cedula:   d.cedula,
+                    telefono: d.telefono,
+                    email:    d.email,
+                    monto:    d.monto,
+                    cuotas:   d.cuotas,
+                    pdfBase64:     await blobToBase64(doc.output('blob')),
+                    idFrontBase64: await blobToBase64(captures['cedula-front']),
+                    idBackBase64:  await blobToBase64(captures['cedula-back']),
+                    selfieBase64:  await blobToBase64(captures['selfie']),
+                    startTime, endTime, userIp
+                };
+
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method:'POST', redirect:'follow',
+                    headers:{'Content-Type':'text/plain;charset=utf-8'},
+                    body: JSON.stringify(formData)
+                })
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('loadingModal').classList.add('hidden');
+                    if(data.result === 'success') {
+                        document.getElementById('step4').style.display = 'none';
+                        document.getElementById('successStep').classList.remove('hidden');
+                    } else if(data.result === 'error' && data.message === 'Invalid Code') {
+                        alert("❌ CÓDIGO INCORRECTO.");
+                    } else {
+                        alert("Error: " + data.message);
+                    }
+                })
+                .catch(() => {
+                    document.getElementById('loadingModal').classList.add('hidden');
+                    alert("Error enviando datos (Posiblemente archivos muy grandes).");
+                });
+
+            } catch(err) {
+                document.getElementById('loadingModal').classList.add('hidden');
+                alert("Error procesando archivos: " + err.message);
+            }
+        };
+    </script>
+</body>
+</html>
