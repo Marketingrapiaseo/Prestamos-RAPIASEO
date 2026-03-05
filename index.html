@@ -8,14 +8,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 20px; margin: 0; }
-        .main-card { background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; overflow: hidden; min-height: 700px; position: relative; }
+        /* Ajuste de padding para móviles */
+        body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 10px; margin: 0; }
+        @media (min-width: 640px) { body { padding: 20px; } }
+
+        /* Ajuste de la tarjeta principal para responsividad */
+        .main-card { background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; overflow: hidden; min-height: 700px; position: relative; }
+        
         .signature-area { cursor: crosshair; touch-action: none; }
         .step { display: none; }
         .step.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .legal-box { scrollbar-width: thin; scrollbar-color: #cbd5e1 #f1f5f9; }
-        .legal-box::-webkit-scrollbar { width: 6px; }
+        
+        /* Eliminado scrollbar personalizado de legal-box ya que no se usará scroll */
+        
         .radio-selected { background-color: #eff6ff; border-color: #2563eb; color: #1e40af; }
         .code-input { letter-spacing: 0.5em; text-align: center; font-size: 1.2rem; }
         .upload-box { border: 2px dashed #cbd5e1; transition: all 0.3s; }
@@ -129,7 +135,8 @@
                 <!-- PASO 1: LEGAL -->
                 <div id="step1" class="step active">
                     <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase">Política de Tratamiento de Datos</h2>
-                    <div class="h-40 overflow-y-auto p-3 bg-gray-50 border border-gray-200 rounded text-xs text-gray-600 mb-4 text-justify legal-box leading-relaxed">
+                    <!-- MODIFICADO: Se quitó h-40 overflow-y-auto legal-box para que se vea completo -->
+                    <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 mb-5 text-justify leading-relaxed">
                         <p class="mb-2"><strong>RAPIASEO SAS</strong>, con domicilio en Cali, Colombia, es responsable del tratamiento de los datos personales suministrados a través de este formulario. La información será utilizada para los fines asociados al proceso de selección, contacto, gestión administrativa y demás actividades relacionadas con la operación de la empresa. Los datos serán almacenados de forma segura y no serán compartidos con terceros sin autorización previa, salvo en los casos legalmente permitidos. Al continuar y enviar este formulario, usted declara que ha leído, comprende y autoriza el tratamiento de sus datos personales conforme a esta política.</p>
                     </div>
                     <div class="flex items-center mb-5 bg-blue-50 p-3 rounded-lg border border-blue-100">
@@ -137,7 +144,7 @@
                         <label for="accept" class="ml-3 text-sm font-medium text-gray-700 cursor-pointer">He leído y acepto la política de datos.</label>
                     </div>
                     <div class="text-right">
-                        <button type="button" onclick="window.validateStep1()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm transition shadow-sm cursor-pointer">Continuar &rarr;</button>
+                        <button type="button" onclick="window.validateStep1()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm transition shadow-sm cursor-pointer w-full sm:w-auto">Continuar &rarr;</button>
                     </div>
                 </div>
 
@@ -159,7 +166,9 @@
                             </label>
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
+                    
+                    <!-- MODIFICADO: grid-cols-1 para móviles, sm:grid-cols-2 para tablet/PC -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre *</label>
                             <input type="text" id="nombre" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
@@ -169,7 +178,9 @@
                             <input type="text" id="apellidos" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
                         </div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mb-4">
+                    
+                    <!-- MODIFICADO: grid-cols-1 para móviles, sm:grid-cols-2 para tablet/PC -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Cédula *</label>
                             <input type="number" id="cedula" placeholder="Sin puntos" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
@@ -179,6 +190,7 @@
                             <input type="number" id="telefono" placeholder="300..." class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
                         </div>
                     </div>
+
                     <div class="mb-4">
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Correo Electrónico *</label>
                         <input type="email" id="email" placeholder="ejemplo@rapiaseo.com" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
@@ -188,7 +200,9 @@
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Cuenta de Desembolso</label>
                         <div class="w-full p-2 border border-gray-200 bg-gray-50 rounded text-sm text-gray-500 italic">Registrada en la nómina de la empresa</div>
                     </div>
-                    <div class="grid grid-cols-2 gap-4 mb-2">
+                    
+                    <!-- MODIFICADO: grid-cols-1 para móviles, sm:grid-cols-2 para tablet/PC -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Monto Solicitado *</label>
                             <input type="text" id="monto" placeholder="Ej: 200.000" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="window.handleMontoInput(this)">
@@ -237,7 +251,8 @@
                             </div>
                             <img id="thumb-cedula-front" class="doc-thumb" alt="Cara frontal">
                         </div>
-                        <div class="flex gap-2">
+                        <!-- MODIFICADO: flex-col para móviles -->
+                        <div class="flex flex-col sm:flex-row gap-2">
                             <button type="button" onclick="openCamera('cedula-front')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
                                 📷 Tomar Foto
                             </button>
@@ -258,7 +273,8 @@
                             </div>
                             <img id="thumb-cedula-back" class="doc-thumb" alt="Cara posterior">
                         </div>
-                        <div class="flex gap-2">
+                        <!-- MODIFICADO: flex-col para móviles -->
+                        <div class="flex flex-col sm:flex-row gap-2">
                             <button type="button" onclick="openCamera('cedula-back')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
                                 📷 Tomar Foto
                             </button>
@@ -279,7 +295,8 @@
                             </div>
                             <img id="thumb-selfie" class="doc-thumb" alt="Selfie">
                         </div>
-                        <div class="flex gap-2">
+                        <!-- MODIFICADO: flex-col para móviles -->
+                        <div class="flex flex-col sm:flex-row gap-2">
                             <button type="button" onclick="openCamera('selfie')" class="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">
                                 🤳 Cámara Frontal
                             </button>
