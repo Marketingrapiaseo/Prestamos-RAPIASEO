@@ -337,7 +337,7 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJkMYuHS7z8wTH0ygbr4ZTx85RLQOaq8PYP8Zmi6OmDXy92_WVi09aX4dgQy3F9FxxGw/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzw7MGhPoXvMwAoqPYXAWliCrGCb-YCHfRU7RCa_x25uX_cCmDtXnk4TKr-tU_RRIvoKw/exec"; // NO CAMBIES ESTO SI NO RE-DESPLIEGAS
 
         const captures = { 'cedula-front': null, 'cedula-back': null, 'selfie': null };
 
@@ -477,9 +477,6 @@
             window.showStep(2);
         };
 
-        // =====================================================
-        //  PASO 2 — VALIDACIÓN + BLOQUEO POR CRÉDITO ACTIVO
-        // =====================================================
         window.validateStep2 = async function() {
             if(!currentType) return alert("Seleccione Crédito o Adelanto.");
             const nombre   = document.getElementById('nombre').value.trim();
@@ -495,7 +492,6 @@
             if (currentType === 'Adelanto' && monto > 250000) return alert("❌ Para Adelanto de Nómina el monto máximo es $250.000 pesos.");
             if (monto > 500000) return alert("❌ El monto máximo permitido es $500.000 pesos.");
 
-            // --- Bloquear botón y mostrar carga ---
             const btn = document.getElementById('btn-next-step2');
             btn.disabled = true;
             btn.innerText = "Verificando...";
@@ -504,51 +500,45 @@
             document.getElementById('loadingText').innerText = "Verificando créditos activos...";
 
           try {
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-        method: 'POST',
-        redirect: 'follow',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
-    });
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
+                });
 
-    const textoRaw = await response.text();
-    console.log("RESPUESTA RAW:", textoRaw);
+                const textoRaw = await response.text();
+                
+                document.getElementById('loadingModal').classList.add('hidden');
+                btn.disabled = false;
+                btn.innerText = "Siguiente";
+                btn.classList.remove('opacity-60', 'cursor-not-allowed');
 
-    document.getElementById('loadingModal').classList.add('hidden');
-    btn.disabled = false;
-    btn.innerText = "Siguiente";
-    btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                await new Promise(resolve => setTimeout(resolve, 50));
 
-    // Esperar un tick antes de parsear para asegurar que el texto llegó completo
-    await new Promise(resolve => setTimeout(resolve, 50));
+                let resultado = {};
+                try {
+                    resultado = JSON.parse(textoRaw);
+                } catch(parseErr) {
+                    resultado = {};
+                }
 
-    let resultado = {};
-    try {
-        resultado = JSON.parse(textoRaw);
-    } catch(parseErr) {
-        console.warn("Error parseando JSON:", parseErr, "Texto recibido:", textoRaw);
-        resultado = {};
-    }
+                if (resultado.hasActiveCredit === true) {
+                    document.getElementById('modal-fecha-venc').innerText = resultado.fechaVencimiento || "N/A";
+                    document.getElementById('modal-dias-rest').innerText  = resultado.diasRestantes    || "N/A";
+                    document.getElementById('modal-credito-activo').classList.add('open');
+                    return;
+                }
 
-    console.log("hasActiveCredit:", resultado.hasActiveCredit);
+                window.showStep(3);
 
-    if (resultado.hasActiveCredit === true) {
-        document.getElementById('modal-fecha-venc').innerText = resultado.fechaVencimiento || "N/A";
-        document.getElementById('modal-dias-rest').innerText  = resultado.diasRestantes    || "N/A";
-        document.getElementById('modal-credito-activo').classList.add('open');
-        return;
-    }
-
-    window.showStep(3);
-
-} catch (err) {
-    document.getElementById('loadingModal').classList.add('hidden');
-    btn.disabled = false;
-    btn.innerText = "Siguiente";
-    btn.classList.remove('opacity-60', 'cursor-not-allowed');
-    console.warn("Error de red:", err);
-    window.showStep(3);
-}
+            } catch (err) {
+                document.getElementById('loadingModal').classList.add('hidden');
+                btn.disabled = false;
+                btn.innerText = "Siguiente";
+                btn.classList.remove('opacity-60', 'cursor-not-allowed');
+                window.showStep(3);
+            }
         };
 
         window.validateStep3 = function() {
@@ -707,10 +697,15 @@
                     } else if(data.result === 'error' && data.message === 'Invalid Code') {
                         alert("❌ CÓDIGO INCORRECTO.");
                     } else {
-                        alert("Error: " + data.message);
+                        throw new Error(data.message);
                     }
                 })
-                .catch(() => { document.getElementById('loadingModal').classList.add('hidden'); alert("Error enviando datos (Posiblemente archivos muy grandes)."); });
+                .catch((error) => { 
+                    document.getElementById('loadingModal').classList.add('hidden');
+                    let msg = "Error enviando datos.";
+                    if(error.message && error.message.includes("QUOTA")) msg = "Límite de correos alcanzado. Intente mañana.";
+                    alert(msg); 
+                });
             } catch(err) {
                 document.getElementById('loadingModal').classList.add('hidden');
                 alert("Error procesando archivos: " + err.message);
