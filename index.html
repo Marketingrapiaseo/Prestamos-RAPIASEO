@@ -6,7 +6,6 @@
     <title>Solicitud FondoRapi</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 10px; margin: 0; }
         @media (min-width: 640px) { body { padding: 20px; } }
@@ -20,35 +19,12 @@
         .upload-box { border: 2px dashed #cbd5e1; transition: all 0.3s; }
         .upload-box:hover { border-color: #2563eb; background-color: #f8fafc; }
         .file-ok { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
-        #camera-modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.92); z-index: 9999;
-            flex-direction: column; align-items: center;
-            justify-content: center; padding: 16px;
-        }
+        #camera-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9999; flex-direction: column; align-items: center; justify-content: center; padding: 16px; }
         #camera-modal.open { display: flex; }
-        #camera-video {
-            width: 100%; max-width: 480px; border-radius: 12px;
-            background: #000; aspect-ratio: 4/3; object-fit: cover;
-        }
-        .cam-guide-overlay {
-            position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            pointer-events: none; border-radius: 12px; overflow: hidden;
-        }
-        .guide-id {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 82%; height: 56%;
-            border: 3px solid rgba(255,255,255,0.8); border-radius: 10px;
-            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
-        }
-        .guide-selfie {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60%; height: 80%;
-            border: 3px solid rgba(255,255,255,0.8); border-radius: 50%;
-            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
-        }
+        #camera-video { width: 100%; max-width: 480px; border-radius: 12px; background: #000; aspect-ratio: 4/3; object-fit: cover; }
+        .cam-guide-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: 12px; overflow: hidden; }
+        .guide-id { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 82%; height: 56%; border: 3px solid rgba(255,255,255,0.8); border-radius: 10px; box-shadow: 0 0 0 9999px rgba(0,0,0,0.45); }
+        .guide-selfie { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 60%; height: 80%; border: 3px solid rgba(255,255,255,0.8); border-radius: 50%; box-shadow: 0 0 0 9999px rgba(0,0,0,0.45); }
         .video-container { position: relative; width: 100%; max-width: 480px; }
         .cam-label { color: white; font-size: 13px; font-weight: 600; text-align: center; margin-bottom: 10px; background: rgba(37,99,235,0.85); padding: 6px 18px; border-radius: 20px; }
         .cam-hint { color: rgba(255,255,255,0.75); font-size: 11px; text-align: center; margin-top: 8px; }
@@ -60,6 +36,10 @@
         .capture-btn { width: 64px; height: 64px; border-radius: 50%; background: white; border: 5px solid rgba(255,255,255,0.5); cursor: pointer; transition: transform 0.1s; display: flex; align-items: center; justify-content: center; }
         .capture-btn:active { transform: scale(0.93); }
         .capture-inner { width: 48px; height: 48px; border-radius: 50%; background: white; }
+
+        /* ── MODAL CRÉDITO ACTIVO ── */
+        #modal-credito-activo { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 9998; align-items: center; justify-content: center; padding: 20px; }
+        #modal-credito-activo.open { display: flex; }
     </style>
 </head>
 <body>
@@ -69,18 +49,37 @@
         <div class="cam-label" id="cam-modal-label">📷 Capturando foto</div>
         <div class="video-container">
             <video id="camera-video" autoplay playsinline muted></video>
-            <div class="cam-guide-overlay">
-                <div id="cam-guide-shape"></div>
-            </div>
+            <div class="cam-guide-overlay"><div id="cam-guide-shape"></div></div>
         </div>
         <canvas id="preview-canvas"></canvas>
         <p class="cam-hint" id="cam-hint-text">Centra el documento dentro del marco</p>
         <div class="flex gap-4 mt-5 items-center">
             <button onclick="closeCameraModal()" class="bg-gray-600 text-white px-5 py-2 rounded-lg text-sm font-bold">Cancelar</button>
-            <button class="capture-btn" onclick="capturePhoto()">
-                <div class="capture-inner"></div>
-            </button>
+            <button class="capture-btn" onclick="capturePhoto()"><div class="capture-inner"></div></button>
             <button onclick="switchCamera()" class="bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-bold">🔄 Cam</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL CRÉDITO ACTIVO ===== -->
+    <div id="modal-credito-activo">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center border-t-4 border-red-500">
+            <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+                </svg>
+            </div>
+            <h2 class="text-lg font-bold text-gray-900 mb-2">Crédito Activo</h2>
+            <p class="text-sm text-gray-600 mb-4">Ya tienes un crédito vigente en <strong>FondoRapi</strong>. No es posible solicitar uno nuevo hasta que finalice el plazo actual.</p>
+            <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-5">
+                <p class="text-xs text-red-700 font-semibold uppercase mb-1">Fecha límite para nueva solicitud</p>
+                <p id="modal-fecha-venc" class="text-2xl font-bold text-red-600">--/--/----</p>
+                <p class="text-xs text-gray-500 mt-1">(<span id="modal-dias-rest">--</span> días restantes)</p>
+            </div>
+            <p class="text-xs text-gray-400 mb-5">Si crees que esto es un error, comunícate con el área de nómina.</p>
+            <button onclick="document.getElementById('modal-credito-activo').classList.remove('open')"
+                class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-sm transition">
+                Entendido
+            </button>
         </div>
     </div>
 
@@ -110,10 +109,7 @@
 
         <div id="date-message-container" class="hidden transition-all duration-300"></div>
 
-        <!-- CONTENIDO DEL FORMULARIO -->
         <div id="form-content" class="hidden">
-
-            <!-- BARRA DE PROGRESO -->
             <div class="flex justify-between px-4 py-3 bg-gray-50 border-b text-[10px] font-bold uppercase tracking-wide text-center">
                 <span id="prog-1" class="text-blue-600">1. Legal</span>
                 <span id="prog-2" class="text-gray-400">2. Datos</span>
@@ -123,7 +119,7 @@
 
             <form id="loanForm" class="p-5" onsubmit="return false;">
 
-                <!-- PASO 1: LEGAL -->
+                <!-- PASO 1 -->
                 <div id="step1" class="step active">
                     <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase">Política de Tratamiento de Datos</h2>
                     <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 mb-5 text-justify leading-relaxed">
@@ -138,7 +134,7 @@
                     </div>
                 </div>
 
-                <!-- PASO 2: DATOS -->
+                <!-- PASO 2 -->
                 <div id="step2" class="step">
                     <h2 class="text-sm font-bold mb-4 text-gray-800 uppercase border-b pb-2">Configuración de Solicitud</h2>
                     <div class="mb-5">
@@ -156,7 +152,6 @@
                             </label>
                         </div>
                     </div>
-                    
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre *</label>
@@ -167,7 +162,6 @@
                             <input type="text" id="apellidos" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
                         </div>
                     </div>
-                    
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Cédula *</label>
@@ -178,7 +172,6 @@
                             <input type="number" id="telefono" placeholder="300..." class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
                         </div>
                     </div>
-
                     <div class="mb-4">
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Correo Electrónico *</label>
                         <input type="email" id="email" placeholder="ejemplo@rapiaseo.com" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm transition">
@@ -188,12 +181,10 @@
                         <label class="block text-xs font-semibold text-gray-600 mb-1">Cuenta de Desembolso</label>
                         <div class="w-full p-2 border border-gray-200 bg-gray-50 rounded text-sm text-gray-500 italic">Registrada en la nómina de la empresa</div>
                     </div>
-                    
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Monto Solicitado *</label>
                             <input type="text" id="monto" placeholder="Ej: 200.000" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="window.handleMontoInput(this)">
-                            <!-- MODIFICADO: hint dinámico según tipo -->
                             <p id="monto-hint" class="text-[10px] text-gray-400 mt-1">Mínimo $100.000 — Máximo $500.000</p>
                         </div>
                         <div>
@@ -221,17 +212,14 @@
                     </div>
                     <div class="flex justify-between border-t pt-4">
                         <button type="button" onclick="window.prevStep(1)" class="text-gray-500 text-sm font-medium hover:text-gray-700 px-2 cursor-pointer">Atrás</button>
-                        <!-- MODIFICADO: botón con id para poder deshabilitarlo durante la consulta -->
                         <button type="button" id="btn-next-step2" onclick="window.validateStep2()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm cursor-pointer">Siguiente</button>
                     </div>
                 </div>
 
-                <!-- PASO 3: DOCUMENTOS -->
+                <!-- PASO 3 -->
                 <div id="step3" class="step">
                     <h2 class="text-sm font-bold mb-1 text-gray-800 uppercase border-b pb-2">Verificación de Identidad</h2>
                     <p class="text-xs text-gray-500 mb-4 mt-2">Toma las fotos o sube archivos (máx 5MB c/u)</p>
-
-                    <!-- CÉDULA CARA FRONTAL -->
                     <div class="doc-card" id="card-cedula-front">
                         <div class="flex items-center justify-between mb-2">
                             <div>
@@ -241,9 +229,7 @@
                             <img id="thumb-cedula-front" class="doc-thumb" alt="Cara frontal">
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <button type="button" onclick="openCamera('cedula-front')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
-                                📷 Tomar Foto
-                            </button>
+                            <button type="button" onclick="openCamera('cedula-front')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">📷 Tomar Foto</button>
                             <label class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-600 py-2 rounded-lg text-xs font-bold hover:border-blue-400 hover:text-blue-600 cursor-pointer transition">
                                 📁 Subir Archivo
                                 <input type="file" class="hidden" accept="image/*,application/pdf" onchange="handleFileUpload(this, 'cedula-front')">
@@ -251,8 +237,6 @@
                         </div>
                         <p id="status-cedula-front" class="text-[10px] text-gray-400 mt-2 text-center">Sin captura</p>
                     </div>
-
-                    <!-- CÉDULA CARA POSTERIOR -->
                     <div class="doc-card" id="card-cedula-back">
                         <div class="flex items-center justify-between mb-2">
                             <div>
@@ -262,9 +246,7 @@
                             <img id="thumb-cedula-back" class="doc-thumb" alt="Cara posterior">
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <button type="button" onclick="openCamera('cedula-back')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
-                                📷 Tomar Foto
-                            </button>
+                            <button type="button" onclick="openCamera('cedula-back')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">📷 Tomar Foto</button>
                             <label class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-600 py-2 rounded-lg text-xs font-bold hover:border-blue-400 hover:text-blue-600 cursor-pointer transition">
                                 📁 Subir Archivo
                                 <input type="file" class="hidden" accept="image/*,application/pdf" onchange="handleFileUpload(this, 'cedula-back')">
@@ -272,8 +254,6 @@
                         </div>
                         <p id="status-cedula-back" class="text-[10px] text-gray-400 mt-2 text-center">Sin captura</p>
                     </div>
-
-                    <!-- SELFIE CON CÉDULA -->
                     <div class="doc-card" id="card-selfie">
                         <div class="flex items-center justify-between mb-2">
                             <div>
@@ -283,9 +263,7 @@
                             <img id="thumb-selfie" class="doc-thumb" alt="Selfie">
                         </div>
                         <div class="flex flex-col sm:flex-row gap-2">
-                            <button type="button" onclick="openCamera('selfie')" class="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">
-                                🤳 Cámara Frontal
-                            </button>
+                            <button type="button" onclick="openCamera('selfie')" class="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">🤳 Cámara Frontal</button>
                             <label class="flex-1 flex items-center justify-center gap-2 border-2 border-gray-300 text-gray-600 py-2 rounded-lg text-xs font-bold hover:border-indigo-400 hover:text-indigo-600 cursor-pointer transition">
                                 📁 Subir Foto
                                 <input type="file" class="hidden" accept="image/*" onchange="handleFileUpload(this, 'selfie')">
@@ -293,14 +271,13 @@
                         </div>
                         <p id="status-selfie" class="text-[10px] text-gray-400 mt-2 text-center">Sin captura</p>
                     </div>
-
                     <div class="flex justify-between border-t pt-4">
                         <button type="button" onclick="window.prevStep(2)" class="text-gray-500 text-sm font-medium hover:text-gray-700 px-2 cursor-pointer">Atrás</button>
                         <button type="button" onclick="window.validateStep3()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm cursor-pointer">Siguiente</button>
                     </div>
                 </div>
 
-                <!-- PASO 4: FIRMA Y VERIFICACIÓN -->
+                <!-- PASO 4 -->
                 <div id="step4" class="step">
                     <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase">Autorización y Firma</h2>
                     <div class="mb-3 border border-yellow-400 rounded-lg overflow-hidden bg-white shadow-sm">
@@ -339,7 +316,7 @@
                     </div>
                 </div>
 
-                <!-- PANTALLA ÉXITO -->
+                <!-- ÉXITO -->
                 <div id="successStep" class="hidden text-center py-10">
                     <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 animate-bounce">
                         <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
@@ -360,26 +337,17 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycby759YqRtbxWdK5dnEo1Ae3r3bcl0HYqDnkPAN9rdtpCpcMYOoLyZRAusActJk7_2Qb/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwJkMYuHS7z8wTH0ygbr4ZTx85RLQOaq8PYP8Zmi6OmDXy92_WVi09aX4dgQy3F9FxxGw/exec";
 
-        // =====================================================
-        //  ESTADO GLOBAL DE CAPTURAS
-        // =====================================================
         const captures = { 'cedula-front': null, 'cedula-back': null, 'selfie': null };
 
-        // =====================================================
-        //  CÁMARA
-        // =====================================================
-        let cameraStream = null;
-        let currentCaptureTarget = null;
-        let currentFacingMode = 'environment';
-
-        const cameraModal   = document.getElementById('camera-modal');
-        const cameraVideo   = document.getElementById('camera-video');
+        let cameraStream = null, currentCaptureTarget = null, currentFacingMode = 'environment';
+        const cameraModal = document.getElementById('camera-modal');
+        const cameraVideo = document.getElementById('camera-video');
         const previewCanvas = document.getElementById('preview-canvas');
-        const camLabel      = document.getElementById('cam-modal-label');
-        const camHint       = document.getElementById('cam-hint-text');
-        const camGuide      = document.getElementById('cam-guide-shape');
+        const camLabel = document.getElementById('cam-modal-label');
+        const camHint  = document.getElementById('cam-hint-text');
+        const camGuide = document.getElementById('cam-guide-shape');
 
         async function openCamera(target) {
             currentCaptureTarget = target;
@@ -391,78 +359,56 @@
             cameraModal.classList.add('open');
             await startStream();
         }
-
         async function startStream() {
             if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
             try {
-                cameraStream = await navigator.mediaDevices.getUserMedia({
-                    video: { facingMode: currentFacingMode, width: { ideal: 1280 }, height: { ideal: 960 } }, audio: false
-                });
+                cameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: currentFacingMode, width: { ideal: 1280 }, height: { ideal: 960 } }, audio: false });
                 cameraVideo.srcObject = cameraStream;
-            } catch(e) {
-                alert("No se pudo acceder a la cámara: " + e.message);
-                closeCameraModal();
-            }
+            } catch(e) { alert("No se pudo acceder a la cámara: " + e.message); closeCameraModal(); }
         }
-
-        async function switchCamera() {
-            currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment';
-            await startStream();
-        }
-
+        async function switchCamera() { currentFacingMode = currentFacingMode === 'environment' ? 'user' : 'environment'; await startStream(); }
         function capturePhoto() {
-            const video = cameraVideo;
-            previewCanvas.width  = video.videoWidth  || 1280;
-            previewCanvas.height = video.videoHeight || 960;
+            previewCanvas.width = cameraVideo.videoWidth || 1280;
+            previewCanvas.height = cameraVideo.videoHeight || 960;
             const ctx2 = previewCanvas.getContext('2d');
             if (currentFacingMode === 'user') { ctx2.translate(previewCanvas.width, 0); ctx2.scale(-1, 1); }
-            ctx2.drawImage(video, 0, 0, previewCanvas.width, previewCanvas.height);
+            ctx2.drawImage(cameraVideo, 0, 0, previewCanvas.width, previewCanvas.height);
             previewCanvas.toBlob(blob => { saveCapture(currentCaptureTarget, blob); closeCameraModal(); }, 'image/jpeg', 0.88);
         }
-
         function closeCameraModal() {
             if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
             cameraModal.classList.remove('open');
         }
-
         function saveCapture(target, blob) {
             captures[target] = blob;
             const url = URL.createObjectURL(blob);
-            const thumb  = document.getElementById('thumb-' + target);
+            const thumb = document.getElementById('thumb-' + target);
             const status = document.getElementById('status-' + target);
-            const card   = document.getElementById('card-' + target);
+            const card = document.getElementById('card-' + target);
             if (thumb)  { thumb.src = url; thumb.classList.add('visible'); }
             if (status) { status.textContent = '✅ Capturado correctamente'; status.classList.add('text-green-600'); status.classList.remove('text-gray-400'); }
             if (card)   { card.classList.add('captured'); }
         }
-
         function handleFileUpload(input, target) {
             if (!input.files || !input.files[0]) return;
             const file = input.files[0];
             if (file.size > 5.5 * 1024 * 1024) { alert("Archivo muy pesado (máx 5MB)."); return; }
             captures[target] = file;
-            const card   = document.getElementById('card-' + target);
+            const card = document.getElementById('card-' + target);
             const status = document.getElementById('status-' + target);
-            const thumb  = document.getElementById('thumb-' + target);
+            const thumb = document.getElementById('thumb-' + target);
             if (card)   card.classList.add('captured');
             if (status) { status.textContent = '✅ ' + file.name.substring(0, 22); status.classList.add('text-green-600'); status.classList.remove('text-gray-400'); }
             if (file.type.startsWith('image/') && thumb) { thumb.src = URL.createObjectURL(file); thumb.classList.add('visible'); }
         }
 
-        // =====================================================
-        //  HELPERS
-        // =====================================================
-        let hasSigned   = false;
-        let currentType = "";
-        let startTime   = new Date().toLocaleString('es-CO');
-        let userIp      = "No detectada";
+        let hasSigned = false, currentType = "", startTime = new Date().toLocaleString('es-CO'), userIp = "No detectada";
 
         function getRawMonto() { const val = document.getElementById('monto').value.replace(/\./g, ''); return val ? parseInt(val) : 0; }
         function formatMoney(amount) { return '$ ' + Math.round(amount).toLocaleString('es-CO'); }
 
         window.handleMontoInput = function(input) {
             let value = input.value.replace(/\D/g, '');
-            // ── NUEVO: bloquear entrada si supera 500.000 ──
             if (parseInt(value) > 500000) value = '500000';
             input.value = value !== "" ? new Intl.NumberFormat('es-CO').format(value) : "";
             window.calculateSimulation();
@@ -474,8 +420,7 @@
             const simBox = document.getElementById('simulacion-box');
             if (monto < 50000) { simBox.classList.add('hidden'); return; }
             simBox.classList.remove('hidden');
-            const tasaInteres = 0.022; const costoAdmin = 3600;
-            const totalPagar = monto * (1 + (tasaInteres * cuotas)) + (costoAdmin * cuotas);
+            const totalPagar = monto * (1 + (0.022 * cuotas)) + (3600 * cuotas);
             document.getElementById('sim-valor-cuota').innerText = formatMoney(totalPagar / cuotas);
             document.getElementById('sim-total-pagar').innerText  = formatMoney(totalPagar);
         };
@@ -484,21 +429,12 @@
             currentType = type;
             document.getElementById('opt-credito').classList.remove('radio-selected');
             document.getElementById('opt-adelanto').classList.remove('radio-selected');
-            const radios = document.getElementsByName('tipoSolicitud');
-            for(let r of radios) { if(r.value === type) r.checked = true; }
+            for(let r of document.getElementsByName('tipoSolicitud')) { if(r.value === type) r.checked = true; }
             document.getElementById(type === 'Credito' ? 'opt-credito' : 'opt-adelanto').classList.add('radio-selected');
             const selectCuotas = document.getElementById('cuotas');
             const hintMonto    = document.getElementById('monto-hint');
-            if (type === 'Adelanto') {
-                selectCuotas.value = "1";
-                selectCuotas.disabled = true;
-                // ── MODIFICADO: máximo $250.000 para adelanto ──
-                hintMonto.innerText = "Mínimo $100.000 — Máximo $250.000";
-            } else {
-                selectCuotas.disabled = false;
-                // ── MODIFICADO: máximo $500.000 para crédito ──
-                hintMonto.innerText = "Mínimo $100.000 — Máximo $500.000";
-            }
+            if (type === 'Adelanto') { selectCuotas.value = "1"; selectCuotas.disabled = true; hintMonto.innerText = "Mínimo $100.000 — Máximo $250.000"; }
+            else { selectCuotas.disabled = false; hintMonto.innerText = "Mínimo $100.000 — Máximo $500.000"; }
             window.calculateSimulation();
         };
 
@@ -536,75 +472,83 @@
             }
         };
 
-        window.validateStep1 = function() { if(!document.getElementById('accept').checked) return alert("Debe aceptar la política."); window.showStep(2); };
+        window.validateStep1 = function() {
+            if(!document.getElementById('accept').checked) return alert("Debe aceptar la política.");
+            window.showStep(2);
+        };
 
         // =====================================================
-        //  PASO 2: VALIDACIÓN CON LÍMITE DE MONTO Y CRÉDITO ACTIVO
+        //  PASO 2 — VALIDACIÓN + BLOQUEO POR CRÉDITO ACTIVO
         // =====================================================
         window.validateStep2 = async function() {
-            // Validaciones básicas de campos
             if(!currentType) return alert("Seleccione Crédito o Adelanto.");
-            const nombre  = document.getElementById('nombre').value.trim();
-            const cedula  = document.getElementById('cedula').value.trim();
-            const email   = document.getElementById('email').value.trim();
+            const nombre   = document.getElementById('nombre').value.trim();
+            const cedula   = document.getElementById('cedula').value.trim();
+            const email    = document.getElementById('email').value.trim();
             const montoRaw = document.getElementById('monto').value.trim();
+
             if(!nombre || !cedula || !email || !montoRaw) return alert("Complete todos los campos obligatorios.");
             if(!email.includes('@')) return alert("El correo electrónico no es válido.");
 
-            // ── NUEVO: validación estricta de monto ──
             const monto = getRawMonto();
-            if (monto < 100000) {
-                return alert("❌ El monto mínimo es $100.000 pesos.");
-            }
-            if (currentType === 'Adelanto' && monto > 250000) {
-                return alert("❌ Para Adelanto de Nómina el monto máximo es $250.000 pesos.");
-            }
-            if (monto > 500000) {
-                return alert("❌ El monto máximo permitido es $500.000 pesos.");
-            }
+            if (monto < 100000) return alert("❌ El monto mínimo es $100.000 pesos.");
+            if (currentType === 'Adelanto' && monto > 250000) return alert("❌ Para Adelanto de Nómina el monto máximo es $250.000 pesos.");
+            if (monto > 500000) return alert("❌ El monto máximo permitido es $500.000 pesos.");
 
-            // ── NUEVO: verificar si la persona tiene un crédito activo ──
+            // --- Bloquear botón y mostrar carga ---
             const btn = document.getElementById('btn-next-step2');
             btn.disabled = true;
             btn.innerText = "Verificando...";
-
+            btn.classList.add('opacity-60', 'cursor-not-allowed');
             document.getElementById('loadingModal').classList.remove('hidden');
             document.getElementById('loadingText').innerText = "Verificando créditos activos...";
 
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    redirect: 'follow',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
-                });
-                const data = await response.json();
+          try {
+    const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        redirect: 'follow',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
+    });
 
-                document.getElementById('loadingModal').classList.add('hidden');
-                btn.disabled = false;
-                btn.innerText = "Siguiente";
+    const textoRaw = await response.text();
+    console.log("RESPUESTA RAW:", textoRaw);
 
-                if (data.hasActiveCredit) {
-                    // Persona tiene crédito activo — bloquear
-                    alert(
-                        "⛔ Ya tienes un crédito activo en FondoRapi.\n\n" +
-                        "Debes terminar de pagar tu crédito vigente antes de solicitar uno nuevo.\n\n" +
-                        "Si crees que esto es un error, comunícate con el área de nómina."
-                    );
-                    return;
-                }
+    document.getElementById('loadingModal').classList.add('hidden');
+    btn.disabled = false;
+    btn.innerText = "Siguiente";
+    btn.classList.remove('opacity-60', 'cursor-not-allowed');
 
-                // Sin crédito activo → continuar al paso 3
-                window.showStep(3);
+    // Esperar un tick antes de parsear para asegurar que el texto llegó completo
+    await new Promise(resolve => setTimeout(resolve, 50));
 
-            } catch (err) {
-                document.getElementById('loadingModal').classList.add('hidden');
-                btn.disabled = false;
-                btn.innerText = "Siguiente";
-                // Si falla la consulta al servidor, se permite continuar para no bloquear al usuario
-                console.warn("No se pudo verificar crédito activo:", err);
-                window.showStep(3);
-            }
+    let resultado = {};
+    try {
+        resultado = JSON.parse(textoRaw);
+    } catch(parseErr) {
+        console.warn("Error parseando JSON:", parseErr, "Texto recibido:", textoRaw);
+        resultado = {};
+    }
+
+    console.log("hasActiveCredit:", resultado.hasActiveCredit);
+
+    if (resultado.hasActiveCredit === true) {
+        document.getElementById('modal-fecha-venc').innerText = resultado.fechaVencimiento || "N/A";
+        document.getElementById('modal-dias-rest').innerText  = resultado.diasRestantes    || "N/A";
+        document.getElementById('modal-credito-activo').classList.add('open');
+        return;
+    }
+
+    window.showStep(3);
+
+} catch (err) {
+    document.getElementById('loadingModal').classList.add('hidden');
+    btn.disabled = false;
+    btn.innerText = "Siguiente";
+    btn.classList.remove('opacity-60', 'cursor-not-allowed');
+    console.warn("Error de red:", err);
+    window.showStep(3);
+}
         };
 
         window.validateStep3 = function() {
@@ -617,7 +561,6 @@
 
         window.prevStep = function(n) { window.showStep(n); };
 
-        // --- FIRMA ---
         const canvas  = document.getElementById('signature-pad');
         const ctx     = canvas.getContext('2d');
         const wrapper = document.getElementById('signature-wrapper');
@@ -631,7 +574,12 @@
         };
         new ResizeObserver(window.resizeCanvas).observe(wrapper);
 
-        function getPos(e) { const r = canvas.getBoundingClientRect(); let x = e.touches?e.touches[0].clientX:e.clientX; let y = e.touches?e.touches[0].clientY:e.clientY; return {x:x-r.left,y:y-r.top}; }
+        function getPos(e) {
+            const r = canvas.getBoundingClientRect();
+            let x = e.touches ? e.touches[0].clientX : e.clientX;
+            let y = e.touches ? e.touches[0].clientY : e.clientY;
+            return { x: x - r.left, y: y - r.top };
+        }
         canvas.addEventListener('mousedown',  e => { isDrawing=true; hasSigned=true; ctx.beginPath(); const p=getPos(e); ctx.moveTo(p.x,p.y); });
         canvas.addEventListener('mousemove',  e => { if(!isDrawing)return; ctx.lineWidth=2; ctx.lineCap='round'; const p=getPos(e); ctx.lineTo(p.x,p.y); ctx.stroke(); });
         canvas.addEventListener('mouseup',    ()  => { isDrawing=false; });
@@ -644,113 +592,52 @@
             r.onloadend = () => resolve(r.result.split(',')[1]); r.onerror = reject;
         });
 
-        // =====================================================
-        //  GENERACIÓN DEL PDF LEGAL COMPLETO
-        // =====================================================
         function generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-            const W = 210;
-            const margin = 20;
-            const contentW = W - margin * 2;
+            const W = 210, margin = 20, contentW = W - margin * 2;
             let y = 20;
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.text('SOLICITUD DE CRÉDITO Y LIBRANZA - FONDORAPI', W / 2, y, { align: 'center' });
-            y += 10;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            const fechaLegible = new Date().toLocaleString('es-CO', { dateStyle: 'long', timeStyle: 'short' });
-            doc.text('Fecha de solicitud: ' + fechaLegible, margin, y);
-            y += 10;
-
-            doc.setFillColor(240, 240, 240);
-            doc.rect(margin, y, contentW, 8, 'F');
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
-            doc.text('  INFORMACIÓN DEL EMPLEADO', margin, y + 5.5);
-            y += 12;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            const nombreCompleto = d.nombre;
-            doc.text('Nombre: ' + nombreCompleto, margin, y); y += 7;
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
+            doc.text('SOLICITUD DE CRÉDITO Y LIBRANZA - FONDORAPI', W / 2, y, { align: 'center' }); y += 10;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+            doc.text('Fecha de solicitud: ' + new Date().toLocaleString('es-CO', { dateStyle: 'long', timeStyle: 'short' }), margin, y); y += 10;
+            doc.setFillColor(240,240,240); doc.rect(margin, y, contentW, 8, 'F');
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+            doc.text('  INFORMACIÓN DEL EMPLEADO', margin, y + 5.5); y += 12;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            doc.text('Nombre: ' + d.nombre, margin, y); y += 7;
             doc.text('Cédula: ' + d.cedula, margin, y); y += 7;
             doc.text('Celular: ' + d.telefono, margin, y); y += 7;
             doc.text('Email: ' + d.email, margin, y); y += 7;
             doc.text('Cuenta Desembolso: Registrada en la nómina de la empresa', margin, y); y += 12;
-
-            doc.setFillColor(240, 240, 240);
-            doc.rect(margin, y, contentW, 8, 'F');
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
-            doc.text('  DETALLES FINANCIEROS Y DEDUCCIONES', margin, y + 5.5);
-            y += 12;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
+            doc.setFillColor(240,240,240); doc.rect(margin, y, contentW, 8, 'F');
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+            doc.text('  DETALLES FINANCIEROS Y DEDUCCIONES', margin, y + 5.5); y += 12;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
             doc.text('Monto Solicitado (Capital): $ ' + montoInt.toLocaleString('es-CO'), margin, y); y += 7;
             doc.text('Plazo: ' + cuotas + ' Cuota(s)', margin, y); y += 7;
-
             doc.setFont('helvetica', 'bold');
             doc.text('VALOR APROXIMADO POR CUOTA: $ ' + Math.round(valorCuota).toLocaleString('es-CO'), margin, y); y += 7;
             doc.text('TOTAL A PAGAR (Inc. Intereses + Admin): $ ' + Math.round(totalPagar).toLocaleString('es-CO'), margin, y); y += 14;
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
             doc.text('AUTORIZACIÓN DE DESCUENTO (LIBRANZA)', margin, y); y += 8;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
             const montoFmt = '$ ' + Math.round(totalPagar).toLocaleString('es-CO');
             const cuotaFmt = '$ ' + Math.round(valorCuota).toLocaleString('es-CO');
-
-            const parrafo1 =
-                'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del ' +
-                'presente documento me permito autorizar de manera expresa e irrevocable a la citada sociedad para que descuente de ' +
-                'mis salarios mensuales y/o de mis prestaciones sociales la suma total de (' + montoFmt + ') PESOS M/CTE, correspondientes ' +
-                'al capital solicitado más intereses y costos administrativos, diferido en ' + cuotas + ' cuota(s) mensuales de aproximadamente (' + cuotaFmt + ') PESOS M/CTE.';
-
-            const parrafo2 =
-                'Firmo en señal de aceptación del referido descuento para que se afecten salarios y prestaciones sociales en vigencia de ' +
-                'mi contrato de trabajo, y de igual manera, autorizo a la sociedad RAPIASEO SAS para que en caso de terminación del ' +
-                'vínculo laboral, por cualquier causa o motivo, el saldo insoluto que resultare de la deuda, sea descontado de mi ' +
-                'liquidación definitiva.';
-
-            const lines1 = doc.splitTextToSize(parrafo1, contentW);
-            doc.text(lines1, margin, y);
-            y += lines1.length * 5 + 5;
-
-            const lines2 = doc.splitTextToSize(parrafo2, contentW);
-            doc.text(lines2, margin, y);
-            y += lines2.length * 5 + 20;
-
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(10);
+            const p1 = 'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del presente documento me permito autorizar de manera expresa e irrevocable a la citada sociedad para que descuente de mis salarios mensuales y/o de mis prestaciones sociales la suma total de (' + montoFmt + ') PESOS M/CTE, correspondientes al capital solicitado más intereses y costos administrativos, diferido en ' + cuotas + ' cuota(s) mensuales de aproximadamente (' + cuotaFmt + ') PESOS M/CTE.';
+            const p2 = 'Firmo en señal de aceptación del referido descuento para que se afecten salarios y prestaciones sociales en vigencia de mi contrato de trabajo, y de igual manera, autorizo a la sociedad RAPIASEO SAS para que en caso de terminación del vínculo laboral, por cualquier causa o motivo, el saldo insoluto que resultare de la deuda, sea descontado de mi liquidación definitiva.';
+            const l1 = doc.splitTextToSize(p1, contentW); doc.text(l1, margin, y); y += l1.length * 5 + 5;
+            const l2 = doc.splitTextToSize(p2, contentW); doc.text(l2, margin, y); y += l2.length * 5 + 20;
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
             doc.text('FIRMA:', margin, y); y += 8;
-
-            try {
-                const sigData = canvas.toDataURL('image/png');
-                doc.addImage(sigData, 'PNG', margin, y, 50, 25);
-                y += 30;
-            } catch(e) { y += 30; }
-
-            doc.setLineWidth(0.4);
-            doc.line(margin, y, margin + 60, y);
-            y += 5;
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
+            try { doc.addImage(canvas.toDataURL('image/png'), 'PNG', margin, y, 50, 25); } catch(e) {}
+            y += 30;
+            doc.setLineWidth(0.4); doc.line(margin, y, margin + 60, y); y += 5;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
             doc.text('CC: ' + d.cedula, margin, y);
-
             return doc;
         }
 
-        // =====================================================
-        //  BACKEND
-        // =====================================================
         window.requestVerificationCode = function() {
             const email  = document.getElementById('email').value;
             const nombre = document.getElementById('nombre').value;
@@ -758,11 +645,7 @@
             if(!email) return alert("Falta el correo.");
             const btn = document.querySelector("#area-pedir-codigo button");
             btn.innerText = "Enviando..."; btn.disabled = true;
-            fetch(GOOGLE_SCRIPT_URL, {
-                method:'POST', redirect:'follow',
-                headers:{'Content-Type':'text/plain;charset=utf-8'},
-                body: JSON.stringify({ action:'sendCode', email, nombre, userIp })
-            })
+            fetch(GOOGLE_SCRIPT_URL, { method:'POST', redirect:'follow', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify({ action:'sendCode', email, nombre, userIp }) })
             .then(r => r.json())
             .then(data => {
                 if(data.result === 'success') {
@@ -787,10 +670,8 @@
             if(!document.getElementById('accept-legal-step3').checked) return alert("Acepte la autorización.");
             if(!hasSigned) return alert("Firme la solicitud.");
             if(codeInput.length !== 4) return alert("Ingrese el código.");
-
             document.getElementById('loadingModal').classList.remove('hidden');
             document.getElementById('loadingText').innerText = "Subiendo documentos y generando solicitud...";
-
             const endTime = new Date().toLocaleString('es-CO');
             const d = {
                 nombre:   document.getElementById('nombre').value + " " + document.getElementById('apellidos').value,
@@ -800,37 +681,23 @@
                 monto:    document.getElementById('monto').value,
                 cuotas:   document.getElementById('cuotas').value
             };
-
             const montoInt   = getRawMonto();
             const cuotas     = parseInt(d.cuotas);
             const totalPagar = montoInt * (1 + (0.022 * cuotas)) + (3600 * cuotas);
             const valorCuota = totalPagar / cuotas;
-
-            const doc = generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota);
-
+            const pdfDoc = generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota);
             try {
                 const formData = {
-                    action: 'submitApplication',
-                    verificationCode: codeInput,
-                    tipo:     currentType,
-                    nombre:   d.nombre,
-                    cedula:   d.cedula,
-                    telefono: d.telefono,
-                    email:    d.email,
-                    monto:    d.monto,
-                    cuotas:   d.cuotas,
-                    pdfBase64:     await blobToBase64(doc.output('blob')),
+                    action: 'submitApplication', verificationCode: codeInput,
+                    tipo: currentType, nombre: d.nombre, cedula: d.cedula,
+                    telefono: d.telefono, email: d.email, monto: d.monto, cuotas: d.cuotas,
+                    pdfBase64:     await blobToBase64(pdfDoc.output('blob')),
                     idFrontBase64: await blobToBase64(captures['cedula-front']),
                     idBackBase64:  await blobToBase64(captures['cedula-back']),
                     selfieBase64:  await blobToBase64(captures['selfie']),
                     startTime, endTime, userIp
                 };
-
-                fetch(GOOGLE_SCRIPT_URL, {
-                    method:'POST', redirect:'follow',
-                    headers:{'Content-Type':'text/plain;charset=utf-8'},
-                    body: JSON.stringify(formData)
-                })
+                fetch(GOOGLE_SCRIPT_URL, { method:'POST', redirect:'follow', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(formData) })
                 .then(r => r.json())
                 .then(data => {
                     document.getElementById('loadingModal').classList.add('hidden');
@@ -843,11 +710,7 @@
                         alert("Error: " + data.message);
                     }
                 })
-                .catch(() => {
-                    document.getElementById('loadingModal').classList.add('hidden');
-                    alert("Error enviando datos (Posiblemente archivos muy grandes).");
-                });
-
+                .catch(() => { document.getElementById('loadingModal').classList.add('hidden'); alert("Error enviando datos (Posiblemente archivos muy grandes)."); });
             } catch(err) {
                 document.getElementById('loadingModal').classList.add('hidden');
                 alert("Error procesando archivos: " + err.message);
