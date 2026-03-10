@@ -8,27 +8,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     
     <style>
-        /* Ajuste de padding para móviles */
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; padding: 10px; margin: 0; }
         @media (min-width: 640px) { body { padding: 20px; } }
-
-        /* Ajuste de la tarjeta principal para responsividad */
         .main-card { background-color: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; overflow: hidden; min-height: 700px; position: relative; }
-        
         .signature-area { cursor: crosshair; touch-action: none; }
         .step { display: none; }
         .step.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Eliminado scrollbar personalizado de legal-box ya que no se usará scroll */
-        
         .radio-selected { background-color: #eff6ff; border-color: #2563eb; color: #1e40af; }
         .code-input { letter-spacing: 0.5em; text-align: center; font-size: 1.2rem; }
         .upload-box { border: 2px dashed #cbd5e1; transition: all 0.3s; }
         .upload-box:hover { border-color: #2563eb; background-color: #f8fafc; }
         .file-ok { border-color: #22c55e !important; background-color: #f0fdf4 !important; }
-
-        /* Camera Modal */
         #camera-modal {
             display: none; position: fixed; inset: 0;
             background: rgba(0,0,0,0.92); z-index: 9999;
@@ -135,7 +126,6 @@
                 <!-- PASO 1: LEGAL -->
                 <div id="step1" class="step active">
                     <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase">Política de Tratamiento de Datos</h2>
-                    <!-- MODIFICADO: Se quitó h-40 overflow-y-auto legal-box para que se vea completo -->
                     <div class="p-4 bg-gray-50 border border-gray-200 rounded-lg text-xs text-gray-700 mb-5 text-justify leading-relaxed">
                         <p class="mb-2"><strong>RAPIASEO SAS</strong>, con domicilio en Cali, Colombia, es responsable del tratamiento de los datos personales suministrados a través de este formulario. La información será utilizada para los fines asociados al proceso de selección, contacto, gestión administrativa y demás actividades relacionadas con la operación de la empresa. Los datos serán almacenados de forma segura y no serán compartidos con terceros sin autorización previa, salvo en los casos legalmente permitidos. Al continuar y enviar este formulario, usted declara que ha leído, comprende y autoriza el tratamiento de sus datos personales conforme a esta política.</p>
                     </div>
@@ -167,7 +157,6 @@
                         </div>
                     </div>
                     
-                    <!-- MODIFICADO: grid-cols-1 para móviles, sm:grid-cols-2 para tablet/PC -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre *</label>
@@ -179,7 +168,6 @@
                         </div>
                     </div>
                     
-                    <!-- MODIFICADO: grid-cols-1 para móviles, sm:grid-cols-2 para tablet/PC -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Cédula *</label>
@@ -201,12 +189,12 @@
                         <div class="w-full p-2 border border-gray-200 bg-gray-50 rounded text-sm text-gray-500 italic">Registrada en la nómina de la empresa</div>
                     </div>
                     
-                    <!-- MODIFICADO: grid-cols-1 para móviles, sm:grid-cols-2 para tablet/PC -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Monto Solicitado *</label>
                             <input type="text" id="monto" placeholder="Ej: 200.000" class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 outline-none text-sm" oninput="window.handleMontoInput(this)">
-                            <p id="monto-hint" class="text-[10px] text-gray-400 mt-1">Mínimo $100.000</p>
+                            <!-- MODIFICADO: hint dinámico según tipo -->
+                            <p id="monto-hint" class="text-[10px] text-gray-400 mt-1">Mínimo $100.000 — Máximo $500.000</p>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Plazo *</label>
@@ -233,7 +221,8 @@
                     </div>
                     <div class="flex justify-between border-t pt-4">
                         <button type="button" onclick="window.prevStep(1)" class="text-gray-500 text-sm font-medium hover:text-gray-700 px-2 cursor-pointer">Atrás</button>
-                        <button type="button" onclick="window.validateStep2()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm cursor-pointer">Siguiente</button>
+                        <!-- MODIFICADO: botón con id para poder deshabilitarlo durante la consulta -->
+                        <button type="button" id="btn-next-step2" onclick="window.validateStep2()" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 font-medium text-sm shadow-sm cursor-pointer">Siguiente</button>
                     </div>
                 </div>
 
@@ -251,7 +240,6 @@
                             </div>
                             <img id="thumb-cedula-front" class="doc-thumb" alt="Cara frontal">
                         </div>
-                        <!-- MODIFICADO: flex-col para móviles -->
                         <div class="flex flex-col sm:flex-row gap-2">
                             <button type="button" onclick="openCamera('cedula-front')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
                                 📷 Tomar Foto
@@ -273,7 +261,6 @@
                             </div>
                             <img id="thumb-cedula-back" class="doc-thumb" alt="Cara posterior">
                         </div>
-                        <!-- MODIFICADO: flex-col para móviles -->
                         <div class="flex flex-col sm:flex-row gap-2">
                             <button type="button" onclick="openCamera('cedula-back')" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-blue-700 transition">
                                 📷 Tomar Foto
@@ -295,7 +282,6 @@
                             </div>
                             <img id="thumb-selfie" class="doc-thumb" alt="Selfie">
                         </div>
-                        <!-- MODIFICADO: flex-col para móviles -->
                         <div class="flex flex-col sm:flex-row gap-2">
                             <button type="button" onclick="openCamera('selfie')" class="flex-1 flex items-center justify-center gap-2 bg-indigo-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition">
                                 🤳 Cámara Frontal
@@ -476,6 +462,8 @@
 
         window.handleMontoInput = function(input) {
             let value = input.value.replace(/\D/g, '');
+            // ── NUEVO: bloquear entrada si supera 500.000 ──
+            if (parseInt(value) > 500000) value = '500000';
             input.value = value !== "" ? new Intl.NumberFormat('es-CO').format(value) : "";
             window.calculateSimulation();
         };
@@ -501,8 +489,16 @@
             document.getElementById(type === 'Credito' ? 'opt-credito' : 'opt-adelanto').classList.add('radio-selected');
             const selectCuotas = document.getElementById('cuotas');
             const hintMonto    = document.getElementById('monto-hint');
-            if (type === 'Adelanto') { selectCuotas.value = "1"; selectCuotas.disabled = true; hintMonto.innerText = "Mínimo $100.000 - Máximo $250.000"; }
-            else { selectCuotas.disabled = false; hintMonto.innerText = "Mínimo $100.000 - Máximo sugerido $500.000"; }
+            if (type === 'Adelanto') {
+                selectCuotas.value = "1";
+                selectCuotas.disabled = true;
+                // ── MODIFICADO: máximo $250.000 para adelanto ──
+                hintMonto.innerText = "Mínimo $100.000 — Máximo $250.000";
+            } else {
+                selectCuotas.disabled = false;
+                // ── MODIFICADO: máximo $500.000 para crédito ──
+                hintMonto.innerText = "Mínimo $100.000 — Máximo $500.000";
+            }
             window.calculateSimulation();
         };
 
@@ -518,7 +514,7 @@
             const day = new Date().getDate();
             const isFirstCut  = (day >= 6  && day <= 10);
             const isSecondCut = (day >= 21 && day <= 25);
-            const isAllowed   = true; // Cambiar a false para activar bloqueo
+            const isAllowed   = true;
             if (isAllowed) {
                 document.getElementById('closed-screen').classList.add('hidden');
                 document.getElementById('form-content').classList.remove('hidden');
@@ -542,14 +538,73 @@
 
         window.validateStep1 = function() { if(!document.getElementById('accept').checked) return alert("Debe aceptar la política."); window.showStep(2); };
 
-        window.validateStep2 = function() {
+        // =====================================================
+        //  PASO 2: VALIDACIÓN CON LÍMITE DE MONTO Y CRÉDITO ACTIVO
+        // =====================================================
+        window.validateStep2 = async function() {
+            // Validaciones básicas de campos
             if(!currentType) return alert("Seleccione Crédito o Adelanto.");
-            if(!document.getElementById('nombre').value || !document.getElementById('cedula').value || !document.getElementById('email').value || !document.getElementById('monto').value) return alert("Complete todos los campos.");
-            if(!document.getElementById('email').value.includes('@')) return alert("Email inválido.");
+            const nombre  = document.getElementById('nombre').value.trim();
+            const cedula  = document.getElementById('cedula').value.trim();
+            const email   = document.getElementById('email').value.trim();
+            const montoRaw = document.getElementById('monto').value.trim();
+            if(!nombre || !cedula || !email || !montoRaw) return alert("Complete todos los campos obligatorios.");
+            if(!email.includes('@')) return alert("El correo electrónico no es válido.");
+
+            // ── NUEVO: validación estricta de monto ──
             const monto = getRawMonto();
-            if(monto < 100000) return alert("Monto mínimo $100.000");
-            if(currentType === 'Adelanto' && monto > 250000) return alert("Máximo $250.000 para Adelanto");
-            window.showStep(3);
+            if (monto < 100000) {
+                return alert("❌ El monto mínimo es $100.000 pesos.");
+            }
+            if (currentType === 'Adelanto' && monto > 250000) {
+                return alert("❌ Para Adelanto de Nómina el monto máximo es $250.000 pesos.");
+            }
+            if (monto > 500000) {
+                return alert("❌ El monto máximo permitido es $500.000 pesos.");
+            }
+
+            // ── NUEVO: verificar si la persona tiene un crédito activo ──
+            const btn = document.getElementById('btn-next-step2');
+            btn.disabled = true;
+            btn.innerText = "Verificando...";
+
+            document.getElementById('loadingModal').classList.remove('hidden');
+            document.getElementById('loadingText').innerText = "Verificando créditos activos...";
+
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
+                });
+                const data = await response.json();
+
+                document.getElementById('loadingModal').classList.add('hidden');
+                btn.disabled = false;
+                btn.innerText = "Siguiente";
+
+                if (data.hasActiveCredit) {
+                    // Persona tiene crédito activo — bloquear
+                    alert(
+                        "⛔ Ya tienes un crédito activo en FondoRapi.\n\n" +
+                        "Debes terminar de pagar tu crédito vigente antes de solicitar uno nuevo.\n\n" +
+                        "Si crees que esto es un error, comunícate con el área de nómina."
+                    );
+                    return;
+                }
+
+                // Sin crédito activo → continuar al paso 3
+                window.showStep(3);
+
+            } catch (err) {
+                document.getElementById('loadingModal').classList.add('hidden');
+                btn.disabled = false;
+                btn.innerText = "Siguiente";
+                // Si falla la consulta al servidor, se permite continuar para no bloquear al usuario
+                console.warn("No se pudo verificar crédito activo:", err);
+                window.showStep(3);
+            }
         };
 
         window.validateStep3 = function() {
@@ -595,25 +650,22 @@
         function generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-            const W = 210; // ancho A4
+            const W = 210;
             const margin = 20;
             const contentW = W - margin * 2;
             let y = 20;
 
-            // --- TÍTULO ---
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(14);
             doc.text('SOLICITUD DE CRÉDITO Y LIBRANZA - FONDORAPI', W / 2, y, { align: 'center' });
             y += 10;
 
-            // --- FECHA ---
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(9);
             const fechaLegible = new Date().toLocaleString('es-CO', { dateStyle: 'long', timeStyle: 'short' });
             doc.text('Fecha de solicitud: ' + fechaLegible, margin, y);
             y += 10;
 
-            // --- SECCIÓN: INFORMACIÓN DEL EMPLEADO ---
             doc.setFillColor(240, 240, 240);
             doc.rect(margin, y, contentW, 8, 'F');
             doc.setFont('helvetica', 'bold');
@@ -623,14 +675,13 @@
 
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(10);
-            const nombreCompleto = d.nombre; // ya viene con apellidos concatenados
+            const nombreCompleto = d.nombre;
             doc.text('Nombre: ' + nombreCompleto, margin, y); y += 7;
             doc.text('Cédula: ' + d.cedula, margin, y); y += 7;
             doc.text('Celular: ' + d.telefono, margin, y); y += 7;
             doc.text('Email: ' + d.email, margin, y); y += 7;
             doc.text('Cuenta Desembolso: Registrada en la nómina de la empresa', margin, y); y += 12;
 
-            // --- SECCIÓN: DETALLES FINANCIEROS ---
             doc.setFillColor(240, 240, 240);
             doc.rect(margin, y, contentW, 8, 'F');
             doc.setFont('helvetica', 'bold');
@@ -647,7 +698,6 @@
             doc.text('VALOR APROXIMADO POR CUOTA: $ ' + Math.round(valorCuota).toLocaleString('es-CO'), margin, y); y += 7;
             doc.text('TOTAL A PAGAR (Inc. Intereses + Admin): $ ' + Math.round(totalPagar).toLocaleString('es-CO'), margin, y); y += 14;
 
-            // --- SECCIÓN: AUTORIZACIÓN LEGAL ---
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10);
             doc.text('AUTORIZACIÓN DE DESCUENTO (LIBRANZA)', margin, y); y += 8;
@@ -655,8 +705,8 @@
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(9);
 
-            const montoFmt   = '$ ' + Math.round(totalPagar).toLocaleString('es-CO');
-            const cuotaFmt   = '$ ' + Math.round(valorCuota).toLocaleString('es-CO');
+            const montoFmt = '$ ' + Math.round(totalPagar).toLocaleString('es-CO');
+            const cuotaFmt = '$ ' + Math.round(valorCuota).toLocaleString('es-CO');
 
             const parrafo1 =
                 'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del ' +
@@ -678,19 +728,16 @@
             doc.text(lines2, margin, y);
             y += lines2.length * 5 + 20;
 
-            // --- FIRMA ---
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10);
             doc.text('FIRMA:', margin, y); y += 8;
 
-            // Insertar imagen de la firma del canvas
             try {
                 const sigData = canvas.toDataURL('image/png');
                 doc.addImage(sigData, 'PNG', margin, y, 50, 25);
                 y += 30;
             } catch(e) { y += 30; }
 
-            // Línea y CC
             doc.setLineWidth(0.4);
             doc.line(margin, y, margin + 60, y);
             y += 5;
@@ -754,13 +801,11 @@
                 cuotas:   document.getElementById('cuotas').value
             };
 
-            // Calcular valores para el PDF
             const montoInt   = getRawMonto();
             const cuotas     = parseInt(d.cuotas);
             const totalPagar = montoInt * (1 + (0.022 * cuotas)) + (3600 * cuotas);
             const valorCuota = totalPagar / cuotas;
 
-            // Generar PDF legal completo
             const doc = generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota);
 
             try {
@@ -811,6 +856,3 @@
     </script>
 </body>
 </html>
-
-
-
