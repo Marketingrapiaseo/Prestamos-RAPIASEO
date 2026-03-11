@@ -143,12 +143,12 @@
                             <label class="cursor-pointer border-2 border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-all text-center group" id="opt-credito" onclick="window.selectType('Credito')">
                                 <input type="radio" name="tipoSolicitud" value="Credito" class="hidden">
                                 <div class="font-bold text-sm text-gray-700 group-hover:text-blue-600">Crédito</div>
-                                <div class="text-[10px] text-gray-400 mt-1">Libranza (1-6 cuotas)</div>
+                                <div class="text-[10px] text-gray-400 mt-1">Libranza (1-6 cuotas quincenales)</div>
                             </label>
                             <label class="cursor-pointer border-2 border-gray-200 rounded-lg p-3 hover:bg-gray-50 transition-all text-center group" id="opt-adelanto" onclick="window.selectType('Adelanto')">
                                 <input type="radio" name="tipoSolicitud" value="Adelanto" class="hidden">
                                 <div class="font-bold text-sm text-gray-700 group-hover:text-blue-600">Adelanto Nómina</div>
-                                <div class="text-[10px] text-gray-400 mt-1">Max $250.000 (1 cuota)</div>
+                                <div class="text-[10px] text-gray-400 mt-1">Max $250.000 (1 cuota quincenal)</div>
                             </label>
                         </div>
                     </div>
@@ -190,12 +190,12 @@
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 mb-1">Plazo *</label>
                             <select id="cuotas" class="w-full p-2 border border-gray-300 rounded bg-white text-sm outline-none disabled:bg-gray-100 disabled:text-gray-500" onchange="window.calculateSimulation()">
-                                <option value="1">1 Cuota</option>
-                                <option value="2">2 Cuotas</option>
-                                <option value="3">3 Cuotas</option>
-                                <option value="4">4 Cuotas</option>
-                                <option value="5">5 Cuotas</option>
-                                <option value="6">6 Cuotas</option>
+                                <option value="1">1 Cuota Quincenal</option>
+                                <option value="2">2 Cuotas Quincenales</option>
+                                <option value="3">3 Cuotas Quincenales</option>
+                                <option value="4">4 Cuotas Quincenales</option>
+                                <option value="5">5 Cuotas Quincenales</option>
+                                <option value="6">6 Cuotas Quincenales</option>
                             </select>
                         </div>
                     </div>
@@ -605,7 +605,7 @@
             doc.text('  DETALLES FINANCIEROS Y DEDUCCIONES', margin, y + 5.5); y += 12;
             doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
             doc.text('Monto Solicitado (Capital): $ ' + montoInt.toLocaleString('es-CO'), margin, y); y += 7;
-            doc.text('Plazo: ' + cuotas + ' Cuota(s)', margin, y); y += 7;
+            doc.text('Plazo: ' + cuotas + ' Cuota(s) Quincenal(es)', margin, y); y += 7;
             doc.setFont('helvetica', 'bold');
             doc.text('VALOR APROXIMADO POR CUOTA: $ ' + Math.round(valorCuota).toLocaleString('es-CO'), margin, y); y += 7;
             doc.text('TOTAL A PAGAR (Inc. Intereses + Admin): $ ' + Math.round(totalPagar).toLocaleString('es-CO'), margin, y); y += 14;
@@ -614,7 +614,7 @@
             doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
             const montoFmt = '$ ' + Math.round(totalPagar).toLocaleString('es-CO');
             const cuotaFmt = '$ ' + Math.round(valorCuota).toLocaleString('es-CO');
-            const p1 = 'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del presente documento me permito autorizar de manera expresa e irrevocable a la citada sociedad para que descuente de mis salarios mensuales y/o de mis prestaciones sociales la suma total de (' + montoFmt + ') PESOS M/CTE, correspondientes al capital solicitado más intereses y costos administrativos, diferido en ' + cuotas + ' cuota(s) mensuales de aproximadamente (' + cuotaFmt + ') PESOS M/CTE.';
+            const p1 = 'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del presente documento me permito autorizar de manera expresa e irrevocable a la citada sociedad para que descuente de mis salarios quincenales y/o de mis prestaciones sociales la suma total de (' + montoFmt + ') PESOS M/CTE, correspondientes al capital solicitado más intereses y costos administrativos, diferido en ' + cuotas + ' cuota(s) quincenales de aproximadamente (' + cuotaFmt + ') PESOS M/CTE.';
             const p2 = 'Firmo en señal de aceptación del referido descuento para que se afecten salarios y prestaciones sociales en vigencia de mi contrato de trabajo, y de igual manera, autorizo a la sociedad RAPIASEO SAS para que en caso de terminación del vínculo laboral, por cualquier causa o motivo, el saldo insoluto que resultare de la deuda, sea descontado de mi liquidación definitiva.';
             const l1 = doc.splitTextToSize(p1, contentW); doc.text(l1, margin, y); y += l1.length * 5 + 5;
             const l2 = doc.splitTextToSize(p2, contentW); doc.text(l2, margin, y); y += l2.length * 5 + 20;
