@@ -322,7 +322,11 @@
                         <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"></path></svg>
                     </div>
                     <h2 class="text-xl font-bold text-gray-800 mb-2">¡Solicitud Exitosa!</h2>
-                    <p class="text-gray-600 text-sm mb-4 px-4">Documentos subidos y solicitud enviada correctamente.</p>
+                    <p class="text-gray-600 text-sm px-4">Documentos subidos y solicitud enviada correctamente.</p>
+                    <div class="bg-blue-50 border border-blue-200 text-blue-800 text-xs p-4 rounded-lg text-justify leading-relaxed mt-5 mx-4">
+                        <strong>Información importante:</strong> Su crédito se encuentra actualmente en proceso de revisión. En caso de no ser aprobado, el área de nómina se comunicará con usted oportunamente.
+Si la solicitud es aprobada, el desembolso se realizará entre viernes y sábado, dependiendo de la fecha en que se haya realizado la solicitud y del corte de nómina correspondiente. Tenga en cuenta que los desembolsos se efectúan únicamente los viernes y sábados, excepto cuando coinciden con el día de pago de nómina.
+                    </div>
                 </div>
             </form>
         </div>
@@ -416,7 +420,21 @@
 
         window.calculateSimulation = function() {
             const monto = getRawMonto();
-            const cuotas = parseInt(document.getElementById('cuotas').value) || 1;
+            const cuotasSelect = document.getElementById('cuotas');
+            
+            // Validar que si es Crédito por 500.000 pesos, obligue a mínimo 2 cuotas quincenales
+            if (currentType === 'Credito') {
+                if (monto === 500000) {
+                    cuotasSelect.options[0].disabled = true; // Desactiva 1 cuota
+                    if (cuotasSelect.value === "1") {
+                        cuotasSelect.value = "2";
+                    }
+                } else {
+                    cuotasSelect.options[0].disabled = false;
+                }
+            }
+
+            const cuotas = parseInt(cuotasSelect.value) || 1;
             const simBox = document.getElementById('simulacion-box');
             if (monto < 50000) { simBox.classList.add('hidden'); return; }
             simBox.classList.remove('hidden');
@@ -433,8 +451,16 @@
             document.getElementById(type === 'Credito' ? 'opt-credito' : 'opt-adelanto').classList.add('radio-selected');
             const selectCuotas = document.getElementById('cuotas');
             const hintMonto    = document.getElementById('monto-hint');
-            if (type === 'Adelanto') { selectCuotas.value = "1"; selectCuotas.disabled = true; hintMonto.innerText = "Mínimo $100.000 — Máximo $250.000"; }
-            else { selectCuotas.disabled = false; hintMonto.innerText = "Mínimo $100.000 — Máximo $500.000"; }
+            if (type === 'Adelanto') { 
+                selectCuotas.options[0].disabled = false;
+                selectCuotas.value = "1"; 
+                selectCuotas.disabled = true; 
+                hintMonto.innerText = "Mínimo $100.000 — Máximo $250.000"; 
+            }
+            else { 
+                selectCuotas.disabled = false; 
+                hintMonto.innerText = "Mínimo $100.000 — Máximo $500.000"; 
+            }
             window.calculateSimulation();
         };
 
@@ -491,6 +517,11 @@
             if (monto < 100000) return alert("❌ El monto mínimo es $100.000 pesos.");
             if (currentType === 'Adelanto' && monto > 250000) return alert("❌ Para Adelanto de Nómina el monto máximo es $250.000 pesos.");
             if (monto > 500000) return alert("❌ El monto máximo permitido es $500.000 pesos.");
+
+            const cuotas = parseInt(document.getElementById('cuotas').value);
+            if (currentType === 'Credito' && monto === 500000 && cuotas === 1) {
+                return alert("❌ Para montos de $500.000 pesos, debe seleccionar un plazo mínimo de 2 cuotas quincenales.");
+            }
 
             const btn = document.getElementById('btn-next-step2');
             btn.disabled = true;
