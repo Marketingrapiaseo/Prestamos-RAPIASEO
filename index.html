@@ -4,10 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Solicitud FondoRapi - Crédito</title>
-    <script src="https://cdn.tailwindcss.com">
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js">
-    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         /* ========== NEOMMORPHISM BASE ========== */
         :root {
@@ -36,28 +34,28 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Main neomorphic card */
+        /* Main neomorphic card - ahora ocupa todo el ancho en PC */
         .main-card {
             background: var(--bg);
-            border-radius: 24px;
+            border-radius: 0;
             box-shadow:
                 12px 12px 24px var(--shadow-dark),
                 -12px -12px 24px var(--shadow-light);
             width: 100%;
-            max-width: 640px;
-            margin: 16px;
+            max-width: 1400px;
+            margin: 0 auto;
             overflow: hidden;
             position: relative;
-            transition: all var(--transition);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Header with neomorphic relief */
+        /* Header con relieve neomórfico */
         .neo-header {
             background: var(--bg);
             padding: 20px 16px;
@@ -65,7 +63,7 @@
             box-shadow:
                 inset 2px 2px 5px var(--shadow-dark),
                 inset -2px -2px 5px var(--shadow-light);
-            border-radius: 24px 24px 0 0;
+            border-radius: 0;
             position: relative;
             z-index: 2;
         }
@@ -75,16 +73,16 @@
             letter-spacing: 0.05em;
             text-shadow: 2px 2px 4px var(--shadow-dark);
             margin: 0;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
         }
         .neo-header p {
             color: var(--text-light);
-            font-size: 0.75rem;
+            font-size: 0.9rem;
             margin: 4px 0 0;
             font-weight: 500;
         }
 
-        /* Tabs neomorphic */
+        /* Tabs neomórficas */
         .neo-tabs {
             display: flex;
             background: var(--bg);
@@ -93,11 +91,12 @@
                 inset 0 2px 4px var(--shadow-dark),
                 inset 0 -2px 4px var(--shadow-light);
             border-radius: 0;
+            flex-shrink: 0;
         }
         .neo-tab {
             flex: 1;
             padding: 12px 8px;
-            font-size: 0.7rem;
+            font-size: 0.8rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -124,28 +123,32 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* Content area */
+        /* Área de contenido */
         .content-area {
             background: var(--bg);
             padding: 0;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Neomorphic panels */
+        /* Paneles neomórficos */
         .neo-panel {
             background: var(--bg);
             border-radius: var(--radius);
             box-shadow:
                 8px 8px 16px var(--shadow-dark),
                 -8px -8px 16px var(--shadow-light);
-            padding: 20px 16px;
+            padding: 24px 20px;
             margin: 16px;
+            flex: 1;
         }
         .neo-panel-sm {
             padding: 12px;
             border-radius: var(--radius-sm);
         }
 
-        /* Inputs neomorphic */
+        /* Inputs neomórficos */
         .neo-input {
             background: var(--bg);
             border: none;
@@ -153,8 +156,8 @@
                 inset 4px 4px 8px var(--shadow-dark),
                 inset -4px -4px 8px var(--shadow-light);
             border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            font-size: 0.9rem;
+            padding: 14px 16px;
+            font-size: 0.95rem;
             color: var(--text);
             width: 100%;
             outline: none;
@@ -178,7 +181,7 @@
             padding-right: 40px;
         }
 
-        /* Neomorphic buttons */
+        /* Botones neomórficos */
         .neo-btn {
             background: var(--bg);
             border: none;
@@ -186,9 +189,9 @@
                 6px 6px 12px var(--shadow-dark),
                 -6px -6px 12px var(--shadow-light);
             border-radius: var(--radius-sm);
-            padding: 12px 24px;
+            padding: 14px 28px;
             font-weight: 700;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--primary);
             cursor: pointer;
             transition: all var(--transition);
@@ -237,16 +240,16 @@
             color: #fff;
         }
         .neo-btn-sm {
-            padding: 8px 16px;
-            font-size: 0.75rem;
+            padding: 10px 18px;
+            font-size: 0.8rem;
             border-radius: 8px;
         }
 
-        /* Checkbox neomorphic */
+        /* Checkbox neomórfico */
         .neo-checkbox {
             appearance: none;
-            width: 22px;
-            height: 22px;
+            width: 24px;
+            height: 24px;
             background: var(--bg);
             border-radius: 6px;
             box-shadow:
@@ -276,14 +279,14 @@
             transform: rotate(45deg);
         }
 
-        /* Document cards */
+        /* Tarjetas de documentos */
         .doc-card {
             background: var(--bg);
             border-radius: var(--radius-sm);
             box-shadow:
                 6px 6px 12px var(--shadow-dark),
                 -6px -6px 12px var(--shadow-light);
-            padding: 14px;
+            padding: 16px;
             margin-bottom: 16px;
             transition: all var(--transition);
         }
@@ -294,19 +297,20 @@
                 0 0 0 2px var(--success);
         }
 
-        /* Progress steps */
+        /* Barra de pasos */
         .progress-steps {
             display: flex;
             justify-content: space-between;
-            padding: 12px 16px;
+            padding: 16px 20px;
             background: var(--bg);
             box-shadow:
                 inset 0 2px 4px var(--shadow-dark),
                 inset 0 -2px 4px var(--shadow-light);
-            font-size: 0.6rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.05em;
+            flex-shrink: 0;
         }
         .progress-step {
             color: var(--text-light);
@@ -317,7 +321,7 @@
             color: var(--primary);
         }
 
-        /* Signature area */
+        /* Área de firma */
         .neo-signature-wrapper {
             background: var(--bg);
             box-shadow:
@@ -325,24 +329,24 @@
                 inset -6px -6px 12px var(--shadow-light);
             border-radius: var(--radius-sm);
             width: 100%;
-            height: 130px;
+            height: 150px;
             position: relative;
             overflow: hidden;
             touch-action: none;
         }
 
-        /* Upload area */
+        /* Área de carga */
         .neo-upload {
             background: var(--bg);
             box-shadow:
                 inset 3px 3px 6px var(--shadow-dark),
                 inset -3px -3px 6px var(--shadow-light);
             border-radius: var(--radius-sm);
-            padding: 10px;
+            padding: 12px;
             text-align: center;
             cursor: pointer;
             transition: all var(--transition);
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: 600;
             color: var(--text-light);
             border: 2px dashed transparent;
@@ -378,12 +382,12 @@
                 12px 12px 24px rgba(0, 0, 0, 0.2),
                 -12px -12px 24px var(--shadow-light);
             padding: 24px;
-            max-width: 400px;
+            max-width: 500px;
             width: 100%;
             text-align: center;
         }
 
-        /* Success Modal Animation */
+        /* Animación del modal de éxito */
         @keyframes popIn {
             0% {
                 transform: scale(0.2);
@@ -404,7 +408,7 @@
             animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* Camera guide */
+        /* Guía de cámara */
         .video-container {
             position: relative;
             width: 100%;
@@ -450,30 +454,29 @@
             box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
         }
 
-        /* Responsive helpers */
-        @media (max-width: 640px) {
+        /* Responsive */
+        @media (max-width: 768px) {
             .main-card {
-                margin: 8px;
-                border-radius: 18px;
+                border-radius: 0;
+                margin: 0;
             }
             .neo-header {
-                border-radius: 18px 18px 0 0;
                 padding: 16px 12px;
             }
             .neo-header h1 {
-                font-size: 1.2rem;
+                font-size: 1.3rem;
             }
             .neo-panel {
-                padding: 14px 10px;
+                padding: 16px 12px;
                 margin: 8px;
             }
             .progress-steps {
-                font-size: 0.5rem;
-                padding: 8px 8px;
+                font-size: 0.6rem;
+                padding: 10px 12px;
             }
             .neo-btn {
-                padding: 10px 18px;
-                font-size: 0.75rem;
+                padding: 12px 20px;
+                font-size: 0.8rem;
             }
             .neo-input {
                 padding: 10px 14px;
@@ -483,11 +486,11 @@
                 gap: 8px;
             }
             .doc-card {
-                padding: 10px;
+                padding: 12px;
             }
         }
 
-        /* Animations */
+        /* Animación de cambio de paso */
         @keyframes fadeIn {
             from {
                 opacity: 0;
@@ -501,11 +504,20 @@
         .step.active {
             animation: fadeIn 0.3s ease;
         }
+
+        /* Ocultar pasos no activos */
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+
         .hidden {
             display: none !important;
         }
 
-        /* Misc */
+        /* Utilidades */
         .text-primary {
             color: var(--primary);
         }
@@ -528,7 +540,7 @@
 </head>
 <body>
 
-    <!-- ===== CAMERA MODAL ===== -->
+    <!-- ===== MODAL CÁMARA ===== -->
     <div id="camera-modal" class="modal-overlay hidden" style="background: rgba(0,0,0,0.92);">
         <div class="text-center">
             <div id="cam-modal-label" class="text-white font-bold mb-3 text-sm px-4 py-2 rounded-full bg-blue-600 inline-block">📷 Capturando foto</div>
@@ -587,7 +599,7 @@
         </div>
     </div>
 
-    <!-- ===== LOADING MODAL ===== -->
+    <!-- ===== MODAL DE CARGA ===== -->
     <div id="loadingModal" class="modal-overlay hidden" style="z-index:10000;">
         <div class="modal-card flex flex-col items-center">
             <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-blue-600 mb-3"></div>
@@ -595,15 +607,15 @@
         </div>
     </div>
 
-    <!-- ===== MAIN CARD ===== -->
+    <!-- ===== TARJETA PRINCIPAL ===== -->
     <div class="main-card">
-        <!-- HEADER -->
+        <!-- ENCABEZADO -->
         <div class="neo-header">
             <h1>FondoRapi</h1>
             <p>Solicitud de Crédito por Libranza</p>
         </div>
 
-        <!-- TABS -->
+        <!-- PESTAÑAS -->
         <div class="neo-tabs">
             <button id="tab-solicitar" onclick="switchTab('solicitar')" class="neo-tab active">Solicitar Crédito</button>
             <button id="tab-consultar" onclick="switchTab('consultar')" class="neo-tab">Consultar Estado</button>
@@ -628,7 +640,7 @@
             </div>
 
             <!-- FORMULARIO -->
-            <div id="form-content" class="hidden">
+            <div id="form-content" class="hidden flex-1 flex flex-col">
                 <div class="progress-steps">
                     <span id="prog-1" class="progress-step active">1. Legal</span>
                     <span id="prog-2" class="progress-step">2. Datos</span>
@@ -636,9 +648,9 @@
                     <span id="prog-4" class="progress-step">4. Firma</span>
                 </div>
 
-                <form id="loanForm" class="p-3 sm:p-4" onsubmit="return false;">
+                <form id="loanForm" class="p-3 sm:p-4 flex-1" onsubmit="return false;">
                     <!-- PASO 1: Legal -->
-                    <div id="step1" class="step active">
+                    <div id="step1" class="step active" style="display:block;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase tracking-wide">Política de Tratamiento de Datos *</h2>
                             <div class="p-4 rounded-lg text-xs text-gray-700 mb-5 text-justify leading-relaxed shadow-inner bg-white/30">
@@ -654,8 +666,8 @@
                         </div>
                     </div>
 
-                    <!-- PASO 2: Datos -->
-                    <div id="step2" class="step">
+                    <!-- PASO 2: Datos (inicialmente oculto) -->
+                    <div id="step2" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-4 text-gray-800 uppercase tracking-wide border-b pb-2">Configuración de Solicitud</h2>
                             <!-- Solo crédito por libranza -->
@@ -728,8 +740,8 @@
                         </div>
                     </div>
 
-                    <!-- PASO 3: Docs -->
-                    <div id="step3" class="step">
+                    <!-- PASO 3: Docs (inicialmente oculto) -->
+                    <div id="step3" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-1 text-gray-800 uppercase tracking-wide border-b pb-2">Verificación de Identidad</h2>
                             <p class="text-xs text-gray-500 mb-4 mt-2">Toma las fotos o sube archivos (máx 5MB c/u) *</p>
@@ -795,8 +807,8 @@
                         </div>
                     </div>
 
-                    <!-- PASO 4: Firma -->
-                    <div id="step4" class="step">
+                    <!-- PASO 4: Firma (inicialmente oculto) -->
+                    <div id="step4" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase tracking-wide">Autorización y Firma</h2>
                             <div class="mb-3 rounded-lg overflow-hidden shadow-inner bg-yellow-50/60">
@@ -1055,11 +1067,20 @@
         };
 
         window.showStep = function(n) {
-            document.querySelectorAll('.step').forEach(e => e.classList.remove('active'));
-            document.getElementById('step' + n).classList.add('active');
+            document.querySelectorAll('.step').forEach(e => {
+                e.classList.remove('active');
+                e.style.display = 'none';
+            });
+            const step = document.getElementById('step' + n);
+            step.classList.add('active');
+            step.style.display = 'block';
             for (let i = 1; i <= 4; i++) {
-                document.getElementById('prog-' + i).classList.toggle('active', i <= n);
-                document.getElementById('prog-' + i).classList.toggle('text-gray-400', i > n);
+                const prog = document.getElementById('prog-' + i);
+                if (i <= n) {
+                    prog.classList.add('active');
+                } else {
+                    prog.classList.remove('active');
+                }
             }
         };
 
@@ -1405,7 +1426,7 @@
             }
         };
 
-        // ========== TABS & CONSULTA ==========
+        // ========== PESTAÑAS Y CONSULTA ==========
         window.switchTab = function(tab) {
             const btnSolicitar = document.getElementById('tab-solicitar');
             const btnConsultar = document.getElementById('tab-consultar');
