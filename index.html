@@ -880,7 +880,10 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-yz9Z9-ufoQrzNUWwuTbWid5cRJoVf1Az3V982zz-Rso9K5AYNL3CPM-x0z6gi_YFNA/exec";
+        // ===== URL CON PROXY CORS =====
+        // Reemplaza si el proxy no funciona, puedes probar con:
+        // https://api.allorigins.win/raw?url=
+        const GOOGLE_SCRIPT_URL = "https://corsproxy.io/?url=https://script.google.com/macros/s/AKfycbw-yz9Z9-ufoQrzNUWwuTbWid5cRJoVf1Az3V982zz-Rso9K5AYNL3CPM-x0z6gi_YFNA/exec";
 
         const captures = { 'cedula-front': null, 'cedula-back': null, 'selfie': null };
 
@@ -1108,7 +1111,7 @@
             document.getElementById('loadingText').innerText = "Verificando autorización del empleado...";
 
             try {
-                // 1. Verificar si la cédula está en la hoja de cálculo
+                // 1. Verificar si la cédula está en la hoja de cálculo (requiere agregar action 'checkEmployee' en el script)
                 const responseEmpleado = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     redirect: 'follow',
