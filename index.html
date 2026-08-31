@@ -557,7 +557,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL LEGAL (nuevo) ===== -->
+    <!-- ===== MODAL LEGAL ===== -->
     <div id="modal-legal" class="modal-overlay hidden">
         <div class="modal-card modal-pop">
             <h3 class="text-lg font-bold text-gray-900 mb-3">Autorización de Descuento</h3>
@@ -1079,11 +1079,16 @@
 
         window.validateStep2 = async function() {
             const nombre = document.getElementById('nombre').value.trim();
+            const apellidos = document.getElementById('apellidos').value.trim();
             const cedula = document.getElementById('cedula').value.trim();
             const email = document.getElementById('email').value.trim();
             const montoRaw = document.getElementById('monto').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
 
-            if (!nombre || !cedula || !email || !montoRaw) return alert("Complete todos los campos obligatorios.");
+            // Validar campos obligatorios
+            if (!nombre || !apellidos || !cedula || !email || !montoRaw || !telefono) {
+                return alert("Complete todos los campos obligatorios.");
+            }
             if (!email.includes('@')) return alert("El correo electrónico no es válido.");
 
             const monto = getRawMonto();
@@ -1100,18 +1105,39 @@
             btn.innerText = "Verificando...";
             btn.style.opacity = '0.6';
             document.getElementById('loadingModal').classList.remove('hidden');
-            document.getElementById('loadingText').innerText = "Verificando créditos activos...";
+            document.getElementById('loadingText').innerText = "Verificando autorización del empleado...";
 
             try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                // 1. Verificar si la cédula está en la hoja de cálculo
+                const responseEmpleado = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'checkEmployee', cedula: cedula })
+                });
+
+                const textoEmpleado = await responseEmpleado.text();
+                let resultadoEmpleado = {};
+                try { resultadoEmpleado = JSON.parse(textoEmpleado); } catch (e) { resultadoEmpleado = {}; }
+
+                if (resultadoEmpleado.found !== true) {
+                    document.getElementById('loadingModal').classList.add('hidden');
+                    btn.disabled = false;
+                    btn.innerText = "Siguiente";
+                    btn.style.opacity = '1';
+                    return alert("❌ Su cédula no se encuentra registrada para solicitar créditos. Si cree que es un error, contacte al área de nómina.");
+                }
+
+                // 2. Verificar créditos activos
+                document.getElementById('loadingText').innerText = "Verificando créditos activos...";
+                const responseCredito = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     redirect: 'follow',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
                 });
 
-                const textoRaw = await response.text();
-
+                const textoRaw = await responseCredito.text();
                 document.getElementById('loadingModal').classList.add('hidden');
                 btn.disabled = false;
                 btn.innerText = "Siguiente";
@@ -1134,7 +1160,7 @@
                 btn.disabled = false;
                 btn.innerText = "Siguiente";
                 btn.style.opacity = '1';
-                showStep(3);
+                alert("Error al conectar con el servidor. Intente de nuevo.");
             }
         };
 
