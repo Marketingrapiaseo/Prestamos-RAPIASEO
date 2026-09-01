@@ -8,24 +8,21 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root {
-            --bg: #e8edf4;
+            --bg: #eef2f7;
             --shadow-light: #ffffff;
-            --shadow-dark: #c8d0dc;
+            --shadow-dark: #cfd8e6;
             --primary: #3b5bdb;
             --primary-dark: #2b4acb;
             --text: #2d3748;
             --text-light: #718096;
             --success: #22c55e;
             --danger: #ef4444;
-            --warning: #f59e0b;
-            --radius: 16px;
-            --radius-sm: 10px;
+            --radius: 14px;
+            --radius-sm: 8px;
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
 
         body {
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -40,7 +37,7 @@
         .main-card {
             background: var(--bg);
             border-radius: 0;
-            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
+            box-shadow: 6px 6px 14px var(--shadow-dark), -6px -6px 14px var(--shadow-light);
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
@@ -122,14 +119,10 @@
         .neo-panel {
             background: var(--bg);
             border-radius: var(--radius);
-            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+            box-shadow: 5px 5px 10px var(--shadow-dark), -5px -5px 10px var(--shadow-light);
             padding: 24px 20px;
             margin: 16px;
             flex: 1;
-        }
-        .neo-panel-sm {
-            padding: 12px;
-            border-radius: var(--radius-sm);
         }
 
         .neo-input {
@@ -145,16 +138,11 @@
             transition: all var(--transition);
         }
         .neo-input:focus {
-            box-shadow: inset 1px 1px 3px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light), 0 0 0 3px rgba(59, 91, 219, 0.2);
+            box-shadow: inset 1px 1px 3px var(--shadow-dark), inset -1px -1px 3px var(--shadow-light), 0 0 0 3px rgba(59, 91, 219, 0.15);
         }
         .neo-input:disabled {
-            opacity: 0.7;
+            opacity: 0.6;
             cursor: not-allowed;
-        }
-        .neo-input[readonly] {
-            background-color: rgba(255, 255, 255, 0.4);
-            color: var(--text);
-            cursor: default;
         }
         select.neo-input {
             appearance: none;
@@ -178,8 +166,6 @@
             outline: none;
             letter-spacing: 0.03em;
             text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
         }
         .neo-btn:hover {
             color: var(--primary-dark);
@@ -192,20 +178,20 @@
             color: var(--primary-dark);
         }
         .neo-btn:disabled {
-            opacity: 0.6;
+            opacity: 0.5;
             cursor: not-allowed;
             box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
             transform: none;
             color: var(--text-light);
         }
         .neo-btn-primary {
-            color: #ffffff;
+            color: #fff;
             background: var(--primary);
             box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
         }
         .neo-btn-primary:hover {
             background: var(--primary-dark);
-            color: #ffffff;
+            color: #fff;
         }
         .neo-btn-danger {
             background: var(--danger);
@@ -219,8 +205,8 @@
 
         .neo-checkbox {
             appearance: none;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             background: var(--bg);
             border-radius: 6px;
             box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light);
@@ -237,8 +223,8 @@
         .neo-checkbox:checked::after {
             content: '';
             position: absolute;
-            left: 7px;
-            top: 3px;
+            left: 6px;
+            top: 2px;
             width: 5px;
             height: 10px;
             border: solid #fff;
@@ -273,7 +259,6 @@
         .progress-step {
             color: var(--text-light);
             transition: all var(--transition);
-            position: relative;
         }
         .progress-step.active {
             color: var(--primary);
@@ -316,8 +301,8 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(6px);
+            background: rgba(0,0,0,0.4);
+            backdrop-filter: blur(4px);
             z-index: 9999;
             display: flex;
             align-items: center;
@@ -327,21 +312,20 @@
         .modal-card {
             background: var(--bg);
             border-radius: 24px;
-            box-shadow: 8px 8px 16px rgba(0,0,0,0.2), -8px -8px 16px var(--shadow-light);
-            padding: 24px;
-            max-width: 500px;
+            box-shadow: 10px 10px 20px rgba(0,0,0,0.15), -10px -10px 20px var(--shadow-light);
+            padding: 28px 24px;
+            max-width: 480px;
             width: 100%;
             text-align: center;
         }
 
         @keyframes popIn {
-            0% { transform: scale(0.2); opacity: 0; }
-            60% { transform: scale(1.05); opacity: 1; }
-            80% { transform: scale(0.95); }
+            0% { transform: scale(0.8); opacity: 0; }
+            70% { transform: scale(1.02); opacity: 1; }
             100% { transform: scale(1); }
         }
         .modal-pop {
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            animation: popIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
         .video-container {
@@ -350,7 +334,7 @@
             max-width: 480px;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 6px 6px 12px rgba(0,0,0,0.4), -6px -6px 12px rgba(255,255,255,0.1);
+            box-shadow: 6px 6px 12px rgba(0,0,0,0.3), -6px -6px 12px rgba(255,255,255,0.05);
         }
         #camera-video {
             width: 100%;
@@ -366,104 +350,80 @@
         }
         .guide-id {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 82%;
-            height: 56%;
-            border: 3px solid rgba(255, 255, 255, 0.8);
+            width: 82%; height: 56%;
+            border: 3px solid rgba(255,255,255,0.7);
             border-radius: 10px;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
         }
         .guide-selfie {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%;
-            height: 80%;
-            border: 3px solid rgba(255, 255, 255, 0.8);
+            width: 60%; height: 80%;
+            border: 3px solid rgba(255,255,255,0.7);
             border-radius: 50%;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
         }
 
         @media (max-width: 768px) {
-            .main-card {
-                border-radius: 0;
-                margin: 0;
-            }
-            .neo-header {
-                padding: 16px 12px;
-            }
-            .neo-header h1 {
-                font-size: 1.3rem;
-            }
-            .neo-panel {
-                padding: 16px 12px;
-                margin: 8px;
-            }
-            .progress-steps {
-                font-size: 0.6rem;
-                padding: 10px 12px;
-            }
-            .neo-btn {
-                padding: 12px 20px;
-                font-size: 0.8rem;
-            }
-            .neo-input {
-                padding: 10px 14px;
-                font-size: 0.85rem;
-            }
-            .grid-cols-2 {
-                gap: 8px;
-            }
-            .doc-card {
-                padding: 12px;
-            }
+            .neo-panel { padding: 16px 12px; margin: 8px; }
+            .neo-header h1 { font-size: 1.3rem; }
+            .progress-steps { font-size: 0.6rem; padding: 10px 12px; }
+            .neo-btn { padding: 12px 20px; font-size: 0.8rem; }
+            .neo-input { padding: 10px 14px; font-size: 0.85rem; }
+            .grid-cols-2 { gap: 8px; }
+            .doc-card { padding: 12px; }
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .step.active {
-            animation: fadeIn 0.3s ease;
-        }
         .step {
             display: none;
         }
         .step.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
-        .hidden {
-            display: none !important;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-        .text-primary {
-            color: var(--primary);
-        }
-        .text-muted {
-            color: var(--text-light);
-        }
-        .font-bold {
-            font-weight: 700;
-        }
-        .uppercase {
-            text-transform: uppercase;
-        }
-        .tracking-wide {
-            letter-spacing: 0.05em;
-        }
+        .hidden { display: none !important; }
         .border-b {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
         }
+        .text-muted { color: var(--text-light); }
+        .text-primary { color: var(--primary); }
+        .font-bold { font-weight: 700; }
+        .uppercase { text-transform: uppercase; }
+        .tracking-wide { letter-spacing: 0.05em; }
+
         .info-badge {
-            background: rgba(59, 91, 219, 0.08);
+            background: rgba(59,91,219,0.06);
             border-left: 3px solid var(--primary);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 0.8rem;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 0.78rem;
             color: var(--text-light);
             margin-top: 4px;
+        }
+        .confirm-modal-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+            font-size: 0.9rem;
+        }
+        .confirm-modal-item:last-child {
+            border-bottom: none;
+        }
+        .confirm-modal-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+        .confirm-modal-value {
+            font-weight: 600;
+            color: var(--text);
         }
     </style>
 </head>
@@ -504,8 +464,7 @@
                 <p class="text-xs text-gray-500 mt-1">(<span id="modal-dias-rest">--</span> días restantes)</p>
             </div>
             <p class="text-xs text-gray-400 mb-5">Si crees que esto es un error, comunícate con el área de nómina.</p>
-            <button onclick="document.getElementById('modal-credito-activo').classList.add('hidden')"
-            class="neo-btn neo-btn-danger w-full">Entendido</button>
+            <button onclick="document.getElementById('modal-credito-activo').classList.add('hidden')" class="neo-btn neo-btn-danger w-full">Entendido</button>
         </div>
     </div>
 
@@ -521,6 +480,38 @@
                 <label for="accept-legal-modal" class="text-xs font-bold text-gray-700 cursor-pointer">He leído y acepto la autorización de descuento. <span class="text-red-500">*</span></label>
             </div>
             <button id="btn-aceptar-legal" onclick="aceptarLegal()" class="neo-btn neo-btn-primary w-full" disabled style="opacity:0.5;cursor:not-allowed;">Aceptar y continuar</button>
+        </div>
+    </div>
+
+    <!-- ===== MODAL DE CONFIRMACIÓN DE DATOS (nuevo) ===== -->
+    <div id="modal-confirmar-datos" class="modal-overlay hidden">
+        <div class="modal-card modal-pop">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">📋 Confirmación de datos</h3>
+            <p class="text-xs text-gray-500 mb-5">Por favor, verifica que tus datos sean correctos antes de continuar.</p>
+
+            <div class="text-left mb-5">
+                <div class="confirm-modal-item">
+                    <span class="confirm-modal-label">Nombre completo</span>
+                    <span id="confirm-nombre" class="confirm-modal-value">---</span>
+                </div>
+                <div class="confirm-modal-item">
+                    <span class="confirm-modal-label">Cédula</span>
+                    <span id="confirm-cedula" class="confirm-modal-value">---</span>
+                </div>
+                <div class="confirm-modal-item">
+                    <span class="confirm-modal-label">Correo electrónico</span>
+                    <span id="confirm-email" class="confirm-modal-value">---</span>
+                </div>
+                <div class="confirm-modal-item">
+                    <span class="confirm-modal-label">Celular</span>
+                    <span id="confirm-telefono" class="confirm-modal-value">---</span>
+                </div>
+            </div>
+
+            <div class="flex gap-3">
+                <button onclick="cerrarModalConfirmacion()" class="neo-btn flex-1" style="color:var(--text-light);">Cancelar</button>
+                <button onclick="confirmarDatos()" class="neo-btn neo-btn-primary flex-1">✅ Confirmar</button>
+            </div>
         </div>
     </div>
 
@@ -553,13 +544,11 @@
 
     <!-- ===== TARJETA PRINCIPAL ===== -->
     <div class="main-card">
-        <!-- ENCABEZADO -->
         <div class="neo-header">
             <h1>FondoRapi</h1>
             <p>Solicitud de Crédito por Libranza</p>
         </div>
 
-        <!-- PESTAÑAS -->
         <div class="neo-tabs">
             <button id="tab-solicitar" onclick="switchTab('solicitar')" class="neo-tab active">Solicitar Crédito</button>
             <button id="tab-consultar" onclick="switchTab('consultar')" class="neo-tab">Consultar Estado</button>
@@ -569,7 +558,6 @@
         <div id="seccion-solicitar" class="content-area">
             <div id="date-message-container" class="hidden"></div>
 
-            <!-- Pantalla de cierre -->
             <div id="closed-screen" class="neo-panel flex-col items-center justify-center text-center hidden py-16">
                 <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
                     <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -583,7 +571,6 @@
                 </div>
             </div>
 
-            <!-- FORMULARIO -->
             <div id="form-content" class="hidden flex-1 flex flex-col">
                 <div class="progress-steps">
                     <span id="prog-1" class="progress-step active">1. Legal</span>
@@ -610,24 +597,14 @@
                         </div>
                     </div>
 
-                    <!-- PASO 2: Datos -->
+                    <!-- PASO 2: Datos (solo cédula, teléfono, monto y cuotas) -->
                     <div id="step2" class="step" style="display:none;">
                         <div class="neo-panel">
-                            <h2 class="text-sm font-bold mb-4 text-gray-800 uppercase tracking-wide border-b pb-2">Configuración de Solicitud</h2>
+                            <h2 class="text-sm font-bold mb-4 text-gray-800 uppercase tracking-wide border-b pb-2">Datos de la solicitud</h2>
                             <div class="mb-4 p-3 rounded-lg bg-blue-50/60 shadow-inner text-center">
                                 <span class="text-xs font-bold text-blue-700 uppercase tracking-wide">💳 Crédito por Libranza — 1 a 6 cuotas quincenales</span>
                             </div>
 
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre *</label>
-                                    <input type="text" id="nombre" class="neo-input" placeholder="Se autocompletará" readonly>
-                                </div>
-                                <div>
-                                    <label class="block text-xs font-semibold text-gray-600 mb-1">Apellidos *</label>
-                                    <input type="text" id="apellidos" class="neo-input" placeholder="Se autocompletará" readonly>
-                                </div>
-                            </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Cédula *</label>
@@ -638,15 +615,7 @@
                                     <input type="number" id="telefono" placeholder="300..." class="neo-input">
                                 </div>
                             </div>
-                            <div class="mb-4">
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Correo Electrónico *</label>
-                                <input type="email" id="email" class="neo-input" placeholder="Se autocompletará" readonly>
-                                <div class="info-badge">📧 Este correo es el registrado en RAPIASEO S.A.S. Se usará para enviar el código de verificación.</div>
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-xs font-semibold text-gray-600 mb-1">Cuenta de Desembolso</label>
-                                <div class="neo-input" style="color:var(--text-light);font-style:italic;">Registrada en la nómina de la empresa</div>
-                            </div>
+
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-2">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Monto Solicitado *</label>
@@ -676,6 +645,7 @@
                                     <span id="sim-total-pagar" class="text-xs font-bold text-gray-800">$ 0</span>
                                 </div>
                             </div>
+
                             <div class="flex justify-between border-t pt-4">
                                 <button type="button" onclick="prevStep(1)" class="text-gray-500 text-sm font-medium hover:text-gray-700 px-2 cursor-pointer">Atrás</button>
                                 <button type="button" id="btn-next-step2" onclick="validateStep2()" class="neo-btn neo-btn-primary">Siguiente</button>
@@ -833,7 +803,7 @@
 
     <script>
         // ============================================================
-        // CONFIGURACIÓN: URL de tu Cloudflare Worker (proxy CORS)
+        // CONFIGURACIÓN
         // ============================================================
         var GOOGLE_SCRIPT_URL = "https://fondo-rapi-proxy.diseno-rapiaseo.workers.dev";
 
@@ -857,8 +827,17 @@
             startTime = new Date().toLocaleString('es-CO'),
             userIp = "No detectada";
 
+        // Datos del empleado (se llenan en la confirmación)
+        let empleadoData = {
+            nombres: '',
+            apellidos: '',
+            email: '',
+            cedula: '',
+            telefono: ''
+        };
+
         // ============================================================
-        // FUNCIONES DE CÁMARA
+        // FUNCIONES DE CÁMARA (igual que antes)
         // ============================================================
         async function openCamera(target) {
             currentCaptureTarget = target;
@@ -1021,14 +1000,13 @@
         };
 
         // ============================================================
-        // VALIDACIÓN PASO 2 - Autocompleta nombre, apellidos y email
+        // PASO 2: Validar cédula y teléfono, mostrar modal de confirmación
         // ============================================================
         window.validateStep2 = async function() {
             const cedula = document.getElementById('cedula').value.trim();
             const telefono = document.getElementById('telefono').value.trim();
             const montoRaw = document.getElementById('monto').value.trim();
 
-            // Validar campos obligatorios
             if (!cedula) return alert("Ingrese su número de cédula.");
             if (!telefono) return alert("Ingrese su número de celular.");
             if (!montoRaw) return alert("Ingrese el monto solicitado.");
@@ -1057,21 +1035,18 @@
                     body: JSON.stringify({ action: 'checkEmployee', cedula: cedula })
                 });
                 const empResult = await empResponse.json();
+                document.getElementById('loadingModal').classList.add('hidden');
+                btn.disabled = false;
+                btn.innerText = "Siguiente";
+                btn.style.opacity = '1';
+
                 if (!empResult.found) {
-                    document.getElementById('loadingModal').classList.add('hidden');
-                    btn.disabled = false;
-                    btn.innerText = "Siguiente";
-                    btn.style.opacity = '1';
                     alert('❌ Su cédula no se encuentra registrada en RAPIASEO SAS. Por favor, verifique con el área de nómina.');
                     return;
                 }
 
-                // 2. Autocompletar nombre, apellidos y email
-                document.getElementById('nombre').value = empResult.nombres || "";
-                document.getElementById('apellidos').value = empResult.apellidos || "";
-                document.getElementById('email').value = empResult.email || "";
-
-                // 3. Verificar crédito activo
+                // 2. Verificar crédito activo (antes de mostrar el modal)
+                document.getElementById('loadingModal').classList.remove('hidden');
                 document.getElementById('loadingText').innerText = "Verificando créditos activos...";
                 const credResponse = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
@@ -1079,11 +1054,7 @@
                     body: JSON.stringify({ action: 'checkActiveCredit', cedula, email: empResult.email || "" })
                 });
                 const credResult = await credResponse.json();
-
                 document.getElementById('loadingModal').classList.add('hidden');
-                btn.disabled = false;
-                btn.innerText = "Siguiente";
-                btn.style.opacity = '1';
 
                 if (credResult.hasActiveCredit === true) {
                     document.getElementById('modal-fecha-venc').innerText = credResult.fechaVencimiento || "N/A";
@@ -1092,7 +1063,21 @@
                     return;
                 }
 
-                showStep(3);
+                // 3. Guardar datos del empleado y mostrar modal de confirmación
+                empleadoData = {
+                    nombres: empResult.nombres || '',
+                    apellidos: empResult.apellidos || '',
+                    email: empResult.email || '',
+                    cedula: cedula,
+                    telefono: telefono
+                };
+
+                document.getElementById('confirm-nombre').innerText = empleadoData.nombres + ' ' + empleadoData.apellidos;
+                document.getElementById('confirm-cedula').innerText = empleadoData.cedula;
+                document.getElementById('confirm-email').innerText = empleadoData.email;
+                document.getElementById('confirm-telefono').innerText = empleadoData.telefono;
+
+                document.getElementById('modal-confirmar-datos').classList.remove('hidden');
 
             } catch (err) {
                 document.getElementById('loadingModal').classList.add('hidden');
@@ -1102,6 +1087,19 @@
                 console.error(err);
                 alert("Error en la verificación. Intenta de nuevo.");
             }
+        };
+
+        // ============================================================
+        // MODAL DE CONFIRMACIÓN
+        // ============================================================
+        window.cerrarModalConfirmacion = function() {
+            document.getElementById('modal-confirmar-datos').classList.add('hidden');
+        };
+
+        window.confirmarDatos = function() {
+            document.getElementById('modal-confirmar-datos').classList.add('hidden');
+            // Avanzar al paso 3
+            showStep(3);
         };
 
         // ============================================================
@@ -1169,7 +1167,7 @@
             hasSigned = false; };
 
         // ============================================================
-        // UTILIDADES: BLOB A BASE64
+        // UTILIDADES
         // ============================================================
         const blobToBase64 = blob => new Promise((resolve, reject) => {
             const r = new FileReader();
@@ -1179,7 +1177,7 @@
         });
 
         // ============================================================
-        // GENERAR PDF (Legal)
+        // GENERAR PDF
         // ============================================================
         function generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota) {
             const { jsPDF } = window.jspdf;
@@ -1270,8 +1268,8 @@
         // SOLICITUD DE CÓDIGO DE VERIFICACIÓN
         // ============================================================
         window.requestVerificationCode = function() {
-            const email = document.getElementById('email').value;
-            const nombre = document.getElementById('nombre').value;
+            const email = empleadoData.email;
+            const nombre = empleadoData.nombres + ' ' + empleadoData.apellidos;
             if (!hasSigned) return alert("Firme la solicitud primero.");
             if (!document.getElementById('accept-legal-step3').checked) return alert("Debe aceptar la autorización de descuento.");
             if (!email) return alert("Falta el correo.");
@@ -1315,19 +1313,22 @@
             document.getElementById('loadingModal').classList.remove('hidden');
             document.getElementById('loadingText').innerText = "Subiendo documentos y generando solicitud...";
             const endTime = new Date().toLocaleString('es-CO');
+
             const d = {
-                nombre: document.getElementById('nombre').value + " " + document.getElementById('apellidos').value,
-                cedula: document.getElementById('cedula').value,
-                telefono: document.getElementById('telefono').value,
-                email: document.getElementById('email').value,
+                nombre: empleadoData.nombres + ' ' + empleadoData.apellidos,
+                cedula: empleadoData.cedula,
+                telefono: empleadoData.telefono,
+                email: empleadoData.email,
                 monto: document.getElementById('monto').value,
                 cuotas: document.getElementById('cuotas').value
             };
+
             const montoInt = getRawMonto();
             const cuotas = parseInt(d.cuotas);
             const totalPagar = montoInt * (1 + (0.022 * cuotas)) + (3600 * cuotas);
             const valorCuota = totalPagar / cuotas;
             const pdfDoc = generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota);
+
             try {
                 const formData = {
                     action: 'submitApplication',
@@ -1376,6 +1377,8 @@
                             document.getElementById('btn-submit-final').disabled = true;
                             document.getElementById('btn-submit-final').style.opacity = '0.5';
                             document.getElementById('btn-submit-final').style.cursor = 'not-allowed';
+                            // Reiniciar datos del empleado
+                            empleadoData = { nombres: '', apellidos: '', email: '', cedula: '', telefono: '' };
                         } else if (data.result === 'error' && data.message === 'Invalid Code') {
                             alert("❌ CÓDIGO INCORRECTO.");
                         } else {
@@ -1396,7 +1399,7 @@
         };
 
         // ============================================================
-        // FUNCIONES DE PESTAÑAS Y CONSULTA
+        // PESTAÑAS Y CONSULTA
         // ============================================================
         window.switchTab = function(tab) {
             const btnSolicitar = document.getElementById('tab-solicitar');
@@ -1468,7 +1471,7 @@
         };
 
         // ============================================================
-        // FUNCIONES DEL MODAL LEGAL
+        // MODAL LEGAL
         // ============================================================
         window.abrirModalLegal = function() {
             document.getElementById('modal-legal').classList.remove('hidden');
@@ -1491,7 +1494,7 @@
         });
 
         // ============================================================
-        // FUNCIÓN DE CIERRE DE FECHAS (CORTES)
+        // CIERRE DE FECHAS
         // ============================================================
         window.checkDateAccess = function() {
             const day = new Date().getDate();
@@ -1519,7 +1522,6 @@
                 document.getElementById('form-content').classList.add('hidden');
             }
         };
-        window.toggleLegalText = function() { document.getElementById('legal-content').classList.toggle('hidden'); };
     </script>
 </body>
 </html>
