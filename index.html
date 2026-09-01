@@ -40,9 +40,7 @@
         .main-card {
             background: var(--bg);
             border-radius: 0;
-            box-shadow:
-                12px 12px 24px var(--shadow-dark),
-                -12px -12px 24px var(--shadow-light);
+            box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
@@ -57,9 +55,7 @@
             background: var(--bg);
             padding: 20px 16px;
             text-align: center;
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
             border-radius: 0;
             position: relative;
             z-index: 2;
@@ -83,9 +79,7 @@
             display: flex;
             background: var(--bg);
             padding: 8px 12px 0;
-            box-shadow:
-                inset 0 2px 4px var(--shadow-dark),
-                inset 0 -2px 4px var(--shadow-light);
+            box-shadow: inset 0 2px 4px var(--shadow-dark), inset 0 -2px 4px var(--shadow-light);
             border-radius: 0;
             flex-shrink: 0;
         }
@@ -109,9 +103,7 @@
         .neo-tab.active {
             color: var(--primary);
             background: var(--bg);
-            box-shadow:
-                6px 0 12px var(--shadow-dark),
-                -6px 0 12px var(--shadow-light);
+            box-shadow: 6px 0 12px var(--shadow-dark), -6px 0 12px var(--shadow-light);
             border-bottom: 3px solid var(--primary);
         }
         .neo-tab:not(.active):hover {
@@ -130,9 +122,7 @@
         .neo-panel {
             background: var(--bg);
             border-radius: var(--radius);
-            box-shadow:
-                8px 8px 16px var(--shadow-dark),
-                -8px -8px 16px var(--shadow-light);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
             padding: 24px 20px;
             margin: 16px;
             flex: 1;
@@ -145,9 +135,7 @@
         .neo-input {
             background: var(--bg);
             border: none;
-            box-shadow:
-                inset 4px 4px 8px var(--shadow-dark),
-                inset -4px -4px 8px var(--shadow-light);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
             border-radius: var(--radius-sm);
             padding: 14px 16px;
             font-size: 0.95rem;
@@ -157,10 +145,7 @@
             transition: all var(--transition);
         }
         .neo-input:focus {
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light),
-                0 0 0 3px rgba(59, 91, 219, 0.3);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light), 0 0 0 3px rgba(59, 91, 219, 0.3);
         }
         .neo-input:disabled {
             opacity: 0.7;
@@ -177,9 +162,7 @@
         .neo-btn {
             background: var(--bg);
             border: none;
-            box-shadow:
-                6px 6px 12px var(--shadow-dark),
-                -6px -6px 12px var(--shadow-light);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
             border-radius: var(--radius-sm);
             padding: 14px 28px;
             font-weight: 700;
@@ -195,33 +178,25 @@
         }
         .neo-btn:hover {
             color: var(--primary-dark);
-            box-shadow:
-                4px 4px 8px var(--shadow-dark),
-                -4px -4px 8px var(--shadow-light);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
             transform: translateY(-1px);
         }
         .neo-btn:active {
-            box-shadow:
-                inset 4px 4px 8px var(--shadow-dark),
-                inset -4px -4px 8px var(--shadow-light);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
             transform: translateY(1px);
             color: var(--primary-dark);
         }
         .neo-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-            box-shadow:
-                inset 4px 4px 8px var(--shadow-dark),
-                inset -4px -4px 8px var(--shadow-light);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
             transform: none;
             color: var(--text-light);
         }
         .neo-btn-primary {
             color: #ffffff;
             background: var(--primary);
-            box-shadow:
-                6px 6px 12px var(--shadow-dark),
-                -6px -6px 12px var(--shadow-light);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
         }
         .neo-btn-primary:hover {
             background: var(--primary-dark);
@@ -243,9 +218,7 @@
             height: 24px;
             background: var(--bg);
             border-radius: 6px;
-            box-shadow:
-                inset 3px 3px 6px var(--shadow-dark),
-                inset -3px -3px 6px var(--shadow-light);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
             cursor: pointer;
             position: relative;
             flex-shrink: 0;
@@ -254,9 +227,7 @@
         }
         .neo-checkbox:checked {
             background: var(--primary);
-            box-shadow:
-                inset 2px 2px 5px rgba(0, 0, 0, 0.2),
-                inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+            box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.2), inset -2px -2px 5px rgba(255, 255, 255, 0.1);
         }
         .neo-checkbox:checked::after {
             content: '';
@@ -273,18 +244,13 @@
         .doc-card {
             background: var(--bg);
             border-radius: var(--radius-sm);
-            box-shadow:
-                6px 6px 12px var(--shadow-dark),
-                -6px -6px 12px var(--shadow-light);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
             padding: 16px;
             margin-bottom: 16px;
             transition: all var(--transition);
         }
         .doc-card.captured {
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light),
-                0 0 0 2px var(--success);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light), 0 0 0 2px var(--success);
         }
 
         .progress-steps {
@@ -292,9 +258,7 @@
             justify-content: space-between;
             padding: 16px 20px;
             background: var(--bg);
-            box-shadow:
-                inset 0 2px 4px var(--shadow-dark),
-                inset 0 -2px 4px var(--shadow-light);
+            box-shadow: inset 0 2px 4px var(--shadow-dark), inset 0 -2px 4px var(--shadow-light);
             font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -312,9 +276,7 @@
 
         .neo-signature-wrapper {
             background: var(--bg);
-            box-shadow:
-                inset 6px 6px 12px var(--shadow-dark),
-                inset -6px -6px 12px var(--shadow-light);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
             border-radius: var(--radius-sm);
             width: 100%;
             height: 150px;
@@ -325,9 +287,7 @@
 
         .neo-upload {
             background: var(--bg);
-            box-shadow:
-                inset 3px 3px 6px var(--shadow-dark),
-                inset -3px -3px 6px var(--shadow-light);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
             border-radius: var(--radius-sm);
             padding: 12px;
             text-align: center;
@@ -345,9 +305,7 @@
         .neo-upload.file-ok {
             border-color: var(--success);
             color: var(--success);
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
         }
 
         .modal-overlay {
@@ -364,9 +322,7 @@
         .modal-card {
             background: var(--bg);
             border-radius: 24px;
-            box-shadow:
-                12px 12px 24px rgba(0, 0, 0, 0.2),
-                -12px -12px 24px var(--shadow-light);
+            box-shadow: 12px 12px 24px rgba(0, 0, 0, 0.2), -12px -12px 24px var(--shadow-light);
             padding: 24px;
             max-width: 500px;
             width: 100%;
@@ -399,9 +355,7 @@
             max-width: 480px;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow:
-                8px 8px 16px rgba(0, 0, 0, 0.4),
-                -8px -8px 16px rgba(255, 255, 255, 0.1);
+            box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.4), -8px -8px 16px rgba(255, 255, 255, 0.1);
         }
         #camera-video {
             width: 100%;
@@ -689,7 +643,7 @@
                             <div class="mb-4">
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Correo Electrónico *</label>
                                 <input type="email" id="email" placeholder="ejemplo@rapiaseo.com" class="neo-input">
-                                <p class="text-[10px] text-red-500 font-bold mt-1">IMPORTANTE: Debe ser el correo registrado en RAPIASEO S.A.S.</p>
+                                <p id="email-hint" class="text-[10px] text-gray-400 mt-1">Se autocompletará al validar la cédula.</p>
                             </div>
                             <div class="mb-4">
                                 <label class="block text-xs font-semibold text-gray-600 mb-1">Cuenta de Desembolso</label>
@@ -883,7 +837,7 @@
         // ============================================================
         // CONFIGURACIÓN: URL de tu Cloudflare Worker (proxy CORS)
         // ============================================================
-        var GOOGLE_SCRIPT_URL = "https://fondo-rapi-proxy.diseno-rapiaseo.workers.dev"; // <--- PON AQUÍ TU URL DEL WORKER
+        var GOOGLE_SCRIPT_URL = "https://fondo-rapi-proxy.diseno-rapiaseo.workers.dev";
 
         // ============================================================
         // VARIABLES GLOBALES
@@ -1069,15 +1023,16 @@
         };
 
         // ============================================================
-        // VALIDACIÓN PASO 2 (Datos)
+        // VALIDACIÓN PASO 2 (Datos) - CON AUT COMPLETADO DE EMAIL
         // ============================================================
         window.validateStep2 = async function() {
             const nombre = document.getElementById('nombre').value.trim();
+            const apellidos = document.getElementById('apellidos').value.trim();
             const cedula = document.getElementById('cedula').value.trim();
             const email = document.getElementById('email').value.trim();
             const montoRaw = document.getElementById('monto').value.trim();
 
-            if (!nombre || !cedula || !email || !montoRaw) return alert("Complete todos los campos obligatorios.");
+            if (!nombre || !apellidos || !cedula || !email || !montoRaw) return alert("Complete todos los campos obligatorios.");
             if (!email.includes('@')) return alert("El correo electrónico no es válido.");
 
             const monto = getRawMonto();
@@ -1097,7 +1052,9 @@
             document.getElementById('loadingText').innerText = "Verificando empleado...";
 
             try {
-                // Verificar empleado
+                // ============================================================
+                // 1. VERIFICAR EMPLEADO Y OBTENER EMAIL
+                // ============================================================
                 const empResponse = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -1113,12 +1070,35 @@
                     return;
                 }
 
-                // Verificar crédito activo
+                // ============================================================
+                // 2. AUTOCOMPLETAR EL EMAIL CON EL DE LA HOJA
+                // ============================================================
+                const emailFromSheet = empResult.email || "";
+                if (emailFromSheet) {
+                    document.getElementById('email').value = emailFromSheet;
+                }
+
+                // ============================================================
+                // 3. VALIDAR QUE EL EMAIL INGRESADO (O AUTCOMPLETADO) COINCIDA CON EL DE LA HOJA
+                // ============================================================
+                const emailIngresado = document.getElementById('email').value.trim();
+                if (emailIngresado.toLowerCase() !== emailFromSheet.toLowerCase()) {
+                    document.getElementById('loadingModal').classList.add('hidden');
+                    btn.disabled = false;
+                    btn.innerText = "Siguiente";
+                    btn.style.opacity = '1';
+                    alert('❌ El correo electrónico ingresado no coincide con el registrado para esta cédula en RAPIASEO SAS. Por favor, use el correo que aparece en la hoja de cálculo.');
+                    return;
+                }
+
+                // ============================================================
+                // 4. VERIFICAR CRÉDITO ACTIVO
+                // ============================================================
                 document.getElementById('loadingText').innerText = "Verificando créditos activos...";
                 const credResponse = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
+                    body: JSON.stringify({ action: 'checkActiveCredit', cedula, email: emailIngresado })
                 });
                 const credResult = await credResponse.json();
 
