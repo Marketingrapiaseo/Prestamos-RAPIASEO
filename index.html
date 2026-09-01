@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
+        /* ===== ESTILOS NEOMORFISMO ===== */
         :root {
             --bg: #e0e5ec;
             --shadow-light: #ffffff;
@@ -22,13 +23,9 @@
             --radius-sm: 10px;
             --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        * {
-            box-sizing: border-box;
-        }
-
+        * { box-sizing: border-box; }
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            font-family: 'Inter', system-ui, sans-serif;
             background-color: var(--bg);
             margin: 0;
             padding: 0;
@@ -36,33 +33,23 @@
             display: block;
             -webkit-tap-highlight-color: transparent;
         }
-
         .main-card {
             background: var(--bg);
             border-radius: 0;
-            box-shadow:
-                12px 12px 24px var(--shadow-dark),
-                -12px -12px 24px var(--shadow-light);
+            box-shadow: 12px 12px 24px var(--shadow-dark), -12px -12px 24px var(--shadow-light);
             width: 100%;
             max-width: 1400px;
             margin: 0 auto;
             overflow: hidden;
-            position: relative;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-
         .neo-header {
             background: var(--bg);
             padding: 20px 16px;
             text-align: center;
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light);
-            border-radius: 0;
-            position: relative;
-            z-index: 2;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
         }
         .neo-header h1 {
             color: var(--primary);
@@ -78,15 +65,11 @@
             margin: 4px 0 0;
             font-weight: 500;
         }
-
         .neo-tabs {
             display: flex;
             background: var(--bg);
             padding: 8px 12px 0;
-            box-shadow:
-                inset 0 2px 4px var(--shadow-dark),
-                inset 0 -2px 4px var(--shadow-light);
-            border-radius: 0;
+            box-shadow: inset 0 2px 4px var(--shadow-dark), inset 0 -2px 4px var(--shadow-light);
             flex-shrink: 0;
         }
         .neo-tab {
@@ -109,16 +92,13 @@
         .neo-tab.active {
             color: var(--primary);
             background: var(--bg);
-            box-shadow:
-                6px 0 12px var(--shadow-dark),
-                -6px 0 12px var(--shadow-light);
+            box-shadow: 6px 0 12px var(--shadow-dark), -6px 0 12px var(--shadow-light);
             border-bottom: 3px solid var(--primary);
         }
         .neo-tab:not(.active):hover {
             color: var(--text);
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.2);
         }
-
         .content-area {
             background: var(--bg);
             padding: 0;
@@ -126,28 +106,18 @@
             display: flex;
             flex-direction: column;
         }
-
         .neo-panel {
             background: var(--bg);
             border-radius: var(--radius);
-            box-shadow:
-                8px 8px 16px var(--shadow-dark),
-                -8px -8px 16px var(--shadow-light);
+            box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light);
             padding: 24px 20px;
             margin: 16px;
             flex: 1;
         }
-        .neo-panel-sm {
-            padding: 12px;
-            border-radius: var(--radius-sm);
-        }
-
         .neo-input {
             background: var(--bg);
             border: none;
-            box-shadow:
-                inset 4px 4px 8px var(--shadow-dark),
-                inset -4px -4px 8px var(--shadow-light);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
             border-radius: var(--radius-sm);
             padding: 14px 16px;
             font-size: 0.95rem;
@@ -157,14 +127,7 @@
             transition: all var(--transition);
         }
         .neo-input:focus {
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light),
-                0 0 0 3px rgba(59, 91, 219, 0.3);
-        }
-        .neo-input:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light), 0 0 0 3px rgba(59,91,219,0.3);
         }
         select.neo-input {
             appearance: none;
@@ -173,13 +136,10 @@
             background-position: right 16px center;
             padding-right: 40px;
         }
-
         .neo-btn {
             background: var(--bg);
             border: none;
-            box-shadow:
-                6px 6px 12px var(--shadow-dark),
-                -6px -6px 12px var(--shadow-light);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
             border-radius: var(--radius-sm);
             padding: 14px 28px;
             font-weight: 700;
@@ -190,42 +150,23 @@
             outline: none;
             letter-spacing: 0.03em;
             text-transform: uppercase;
-            position: relative;
-            overflow: hidden;
         }
         .neo-btn:hover {
             color: var(--primary-dark);
-            box-shadow:
-                4px 4px 8px var(--shadow-dark),
-                -4px -4px 8px var(--shadow-light);
+            box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
             transform: translateY(-1px);
         }
         .neo-btn:active {
-            box-shadow:
-                inset 4px 4px 8px var(--shadow-dark),
-                inset -4px -4px 8px var(--shadow-light);
+            box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
             transform: translateY(1px);
-            color: var(--primary-dark);
-        }
-        .neo-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-            box-shadow:
-                inset 4px 4px 8px var(--shadow-dark),
-                inset -4px -4px 8px var(--shadow-light);
-            transform: none;
-            color: var(--text-light);
         }
         .neo-btn-primary {
-            color: #ffffff;
+            color: #fff;
             background: var(--primary);
-            box-shadow:
-                6px 6px 12px var(--shadow-dark),
-                -6px -6px 12px var(--shadow-light);
         }
         .neo-btn-primary:hover {
             background: var(--primary-dark);
-            color: #ffffff;
+            color: #fff;
         }
         .neo-btn-danger {
             background: var(--danger);
@@ -236,27 +177,21 @@
             font-size: 0.8rem;
             border-radius: 8px;
         }
-
         .neo-checkbox {
             appearance: none;
             width: 24px;
             height: 24px;
             background: var(--bg);
             border-radius: 6px;
-            box-shadow:
-                inset 3px 3px 6px var(--shadow-dark),
-                inset -3px -3px 6px var(--shadow-light);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
             cursor: pointer;
-            position: relative;
             flex-shrink: 0;
             transition: all var(--transition);
             outline: none;
         }
         .neo-checkbox:checked {
             background: var(--primary);
-            box-shadow:
-                inset 2px 2px 5px rgba(0, 0, 0, 0.2),
-                inset -2px -2px 5px rgba(255, 255, 255, 0.1);
+            box-shadow: inset 2px 2px 5px rgba(0,0,0,0.2), inset -2px -2px 5px rgba(255,255,255,0.1);
         }
         .neo-checkbox:checked::after {
             content: '';
@@ -269,32 +204,22 @@
             border-width: 0 2px 2px 0;
             transform: rotate(45deg);
         }
-
         .doc-card {
             background: var(--bg);
             border-radius: var(--radius-sm);
-            box-shadow:
-                6px 6px 12px var(--shadow-dark),
-                -6px -6px 12px var(--shadow-light);
+            box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
             padding: 16px;
             margin-bottom: 16px;
-            transition: all var(--transition);
         }
         .doc-card.captured {
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light),
-                0 0 0 2px var(--success);
+            box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light), 0 0 0 2px var(--success);
         }
-
         .progress-steps {
             display: flex;
             justify-content: space-between;
             padding: 16px 20px;
             background: var(--bg);
-            box-shadow:
-                inset 0 2px 4px var(--shadow-dark),
-                inset 0 -2px 4px var(--shadow-light);
+            box-shadow: inset 0 2px 4px var(--shadow-dark), inset 0 -2px 4px var(--shadow-light);
             font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
@@ -304,17 +229,13 @@
         .progress-step {
             color: var(--text-light);
             transition: all var(--transition);
-            position: relative;
         }
         .progress-step.active {
             color: var(--primary);
         }
-
         .neo-signature-wrapper {
             background: var(--bg);
-            box-shadow:
-                inset 6px 6px 12px var(--shadow-dark),
-                inset -6px -6px 12px var(--shadow-light);
+            box-shadow: inset 6px 6px 12px var(--shadow-dark), inset -6px -6px 12px var(--shadow-light);
             border-radius: var(--radius-sm);
             width: 100%;
             height: 150px;
@@ -322,12 +243,9 @@
             overflow: hidden;
             touch-action: none;
         }
-
         .neo-upload {
             background: var(--bg);
-            box-shadow:
-                inset 3px 3px 6px var(--shadow-dark),
-                inset -3px -3px 6px var(--shadow-light);
+            box-shadow: inset 3px 3px 6px var(--shadow-dark), inset -3px -3px 6px var(--shadow-light);
             border-radius: var(--radius-sm);
             padding: 12px;
             text-align: center;
@@ -342,18 +260,10 @@
             border-color: var(--primary);
             color: var(--primary);
         }
-        .neo-upload.file-ok {
-            border-color: var(--success);
-            color: var(--success);
-            box-shadow:
-                inset 2px 2px 5px var(--shadow-dark),
-                inset -2px -2px 5px var(--shadow-light);
-        }
-
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             backdrop-filter: blur(6px);
             z-index: 9999;
             display: flex;
@@ -364,44 +274,26 @@
         .modal-card {
             background: var(--bg);
             border-radius: 24px;
-            box-shadow:
-                12px 12px 24px rgba(0, 0, 0, 0.2),
-                -12px -12px 24px var(--shadow-light);
+            box-shadow: 12px 12px 24px rgba(0,0,0,0.2), -12px -12px 24px var(--shadow-light);
             padding: 24px;
             max-width: 500px;
             width: 100%;
             text-align: center;
         }
-
         @keyframes popIn {
-            0% {
-                transform: scale(0.2);
-                opacity: 0;
-            }
-            60% {
-                transform: scale(1.05);
-                opacity: 1;
-            }
-            80% {
-                transform: scale(0.95);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(0.2); opacity: 0; }
+            60% { transform: scale(1.05); opacity: 1; }
+            80% { transform: scale(0.95); }
+            100% { transform: scale(1); }
         }
-        .modal-pop {
-            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-
+        .modal-pop { animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
         .video-container {
             position: relative;
             width: 100%;
             max-width: 480px;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow:
-                8px 8px 16px rgba(0, 0, 0, 0.4),
-                -8px -8px 16px rgba(255, 255, 255, 0.1);
+            box-shadow: 8px 8px 16px rgba(0,0,0,0.4), -8px -8px 16px rgba(255,255,255,0.1);
         }
         #camera-video {
             width: 100%;
@@ -410,114 +302,41 @@
             background: #000;
             display: block;
         }
-        .cam-guide-overlay {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-        }
+        .cam-guide-overlay { position: absolute; inset: 0; pointer-events: none; }
         .guide-id {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 82%;
-            height: 56%;
-            border: 3px solid rgba(255, 255, 255, 0.8);
+            width: 82%; height: 56%;
+            border: 3px solid rgba(255,255,255,0.8);
             border-radius: 10px;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
         }
         .guide-selfie {
             position: absolute;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            width: 60%;
-            height: 80%;
-            border: 3px solid rgba(255, 255, 255, 0.8);
+            width: 60%; height: 80%;
+            border: 3px solid rgba(255,255,255,0.8);
             border-radius: 50%;
-            box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.45);
+            box-shadow: 0 0 0 9999px rgba(0,0,0,0.45);
         }
-
         @media (max-width: 768px) {
-            .main-card {
-                border-radius: 0;
-                margin: 0;
-            }
-            .neo-header {
-                padding: 16px 12px;
-            }
-            .neo-header h1 {
-                font-size: 1.3rem;
-            }
-            .neo-panel {
-                padding: 16px 12px;
-                margin: 8px;
-            }
-            .progress-steps {
-                font-size: 0.6rem;
-                padding: 10px 12px;
-            }
-            .neo-btn {
-                padding: 12px 20px;
-                font-size: 0.8rem;
-            }
-            .neo-input {
-                padding: 10px 14px;
-                font-size: 0.85rem;
-            }
-            .grid-cols-2 {
-                gap: 8px;
-            }
-            .doc-card {
-                padding: 12px;
-            }
+            .neo-header h1 { font-size: 1.3rem; }
+            .neo-panel { padding: 16px 12px; margin: 8px; }
+            .progress-steps { font-size: 0.6rem; padding: 10px 12px; }
+            .neo-btn { padding: 12px 20px; font-size: 0.8rem; }
         }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        .step.active {
-            animation: fadeIn 0.3s ease;
-        }
-        .step {
-            display: none;
-        }
-        .step.active {
-            display: block;
-        }
-        .hidden {
-            display: none !important;
-        }
-        .text-primary {
-            color: var(--primary);
-        }
-        .text-muted {
-            color: var(--text-light);
-        }
-        .font-bold {
-            font-weight: 700;
-        }
-        .uppercase {
-            text-transform: uppercase;
-        }
-        .tracking-wide {
-            letter-spacing: 0.05em;
-        }
-        .border-b {
-            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-        }
+        .step { display: none; }
+        .step.active { display: block; }
+        .hidden { display: none !important; }
+        .border-b { border-bottom: 1px solid rgba(0,0,0,0.1); }
     </style>
 </head>
 <body>
 
-    <!-- ===== MODAL CÁMARA ===== -->
+    <!-- ===== MODALES ===== -->
+    <!-- Cámara -->
     <div id="camera-modal" class="modal-overlay hidden" style="background: rgba(0,0,0,0.92);">
         <div class="text-center">
             <div id="cam-modal-label" class="text-white font-bold mb-3 text-sm px-4 py-2 rounded-full bg-blue-600 inline-block">📷 Capturando foto</div>
@@ -536,13 +355,11 @@
         </div>
     </div>
 
-    <!-- ===== MODAL CRÉDITO ACTIVO ===== -->
+    <!-- Crédito activo -->
     <div id="modal-credito-activo" class="modal-overlay hidden">
         <div class="modal-card modal-pop">
             <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
-                </svg>
+                <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
             </div>
             <h2 class="text-lg font-bold text-gray-900 mb-2">Crédito Activo</h2>
             <p class="text-sm text-gray-600 mb-4">Ya tienes un crédito vigente en <strong>FondoRapi</strong>. No es posible solicitar uno nuevo hasta que finalice el plazo actual.</p>
@@ -552,12 +369,11 @@
                 <p class="text-xs text-gray-500 mt-1">(<span id="modal-dias-rest">--</span> días restantes)</p>
             </div>
             <p class="text-xs text-gray-400 mb-5">Si crees que esto es un error, comunícate con el área de nómina.</p>
-            <button onclick="document.getElementById('modal-credito-activo').classList.add('hidden')"
-            class="neo-btn neo-btn-danger w-full">Entendido</button>
+            <button onclick="document.getElementById('modal-credito-activo').classList.add('hidden')" class="neo-btn neo-btn-danger w-full">Entendido</button>
         </div>
     </div>
 
-    <!-- ===== MODAL LEGAL (nuevo) ===== -->
+    <!-- Modal legal -->
     <div id="modal-legal" class="modal-overlay hidden">
         <div class="modal-card modal-pop">
             <h3 class="text-lg font-bold text-gray-900 mb-3">Autorización de Descuento</h3>
@@ -572,13 +388,11 @@
         </div>
     </div>
 
-    <!-- ===== MODAL ÉXITO ===== -->
+    <!-- Modal éxito -->
     <div id="modal-exito" class="modal-overlay hidden">
         <div class="modal-card modal-pop">
             <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                </svg>
+                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
             </div>
             <h2 class="text-2xl font-extrabold text-gray-800 mb-3">¡Solicitud Exitosa!</h2>
             <p class="text-gray-600 text-sm mb-4">Documentos subidos y solicitud enviada correctamente.</p>
@@ -591,7 +405,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL DE CARGA ===== -->
+    <!-- Modal carga -->
     <div id="loadingModal" class="modal-overlay hidden" style="z-index:10000;">
         <div class="modal-card flex flex-col items-center">
             <div class="animate-spin rounded-full h-10 w-10 border-4 border-gray-200 border-t-blue-600 mb-3"></div>
@@ -601,26 +415,24 @@
 
     <!-- ===== TARJETA PRINCIPAL ===== -->
     <div class="main-card">
-        <!-- ENCABEZADO -->
         <div class="neo-header">
             <h1>FondoRapi</h1>
             <p>Solicitud de Crédito por Libranza</p>
         </div>
 
-        <!-- PESTAÑAS -->
         <div class="neo-tabs">
             <button id="tab-solicitar" onclick="switchTab('solicitar')" class="neo-tab active">Solicitar Crédito</button>
             <button id="tab-consultar" onclick="switchTab('consultar')" class="neo-tab">Consultar Estado</button>
         </div>
 
-        <!-- ================= SECCIÓN SOLICITAR ================= -->
+        <!-- SECCIÓN SOLICITAR -->
         <div id="seccion-solicitar" class="content-area">
             <div id="date-message-container" class="hidden"></div>
 
             <!-- Pantalla de cierre -->
             <div id="closed-screen" class="neo-panel flex-col items-center justify-center text-center hidden py-16">
                 <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
-                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg class="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 </div>
                 <h2 class="text-xl font-bold text-gray-800">Solicitudes Cerradas</h2>
                 <div class="mt-4 p-3 rounded-lg bg-blue-50/60">
@@ -641,7 +453,7 @@
                 </div>
 
                 <form id="loanForm" class="p-3 sm:p-4 flex-1" onsubmit="return false;">
-                    <!-- PASO 1: Legal -->
+                    <!-- PASO 1 -->
                     <div id="step1" class="step active" style="display:block;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase tracking-wide">Política de Tratamiento de Datos *</h2>
@@ -658,14 +470,13 @@
                         </div>
                     </div>
 
-                    <!-- PASO 2: Datos (oculto inicialmente) -->
+                    <!-- PASO 2 -->
                     <div id="step2" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-4 text-gray-800 uppercase tracking-wide border-b pb-2">Configuración de Solicitud</h2>
                             <div class="mb-4 p-3 rounded-lg bg-blue-50/60 shadow-inner text-center">
                                 <span class="text-xs font-bold text-blue-700 uppercase tracking-wide">💳 Crédito por Libranza — 1 a 6 cuotas quincenales</span>
                             </div>
-
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                                 <div>
                                     <label class="block text-xs font-semibold text-gray-600 mb-1">Nombre *</label>
@@ -731,7 +542,7 @@
                         </div>
                     </div>
 
-                    <!-- PASO 3: Docs (oculto) -->
+                    <!-- PASO 3 -->
                     <div id="step3" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-1 text-gray-800 uppercase tracking-wide border-b pb-2">Verificación de Identidad</h2>
@@ -798,7 +609,7 @@
                         </div>
                     </div>
 
-                    <!-- PASO 4: Firma (oculto) -->
+                    <!-- PASO 4 -->
                     <div id="step4" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase tracking-wide">Autorización y Firma</h2>
@@ -838,25 +649,20 @@
             </div>
         </div>
 
-        <!-- ================= SECCIÓN CONSULTAR ================= -->
+        <!-- SECCIÓN CONSULTAR -->
         <div id="seccion-consultar" class="hidden content-area">
             <div class="neo-panel">
                 <h2 class="text-lg font-bold mb-2 text-gray-800 text-center uppercase tracking-wide">Consulta tu Solicitud</h2>
                 <p class="text-xs text-gray-500 text-center mb-8">Ingresa tu número de cédula para conocer el estado actual de tu trámite en FondoRapi.</p>
-
                 <div class="mb-5 max-w-sm mx-auto">
                     <label class="block text-xs font-semibold text-gray-600 mb-2 text-center">Número de Cédula *</label>
                     <input type="number" id="cedula-consulta" placeholder="Ej: 1144000000" class="neo-input text-center font-bold tracking-widest">
                 </div>
-
                 <div class="max-w-sm mx-auto">
                     <button onclick="consultarEstado()" class="neo-btn neo-btn-primary w-full">Buscar Estado</button>
                 </div>
-
                 <div id="resultado-consulta" class="hidden mt-8 max-w-md mx-auto rounded-xl overflow-hidden shadow-lg">
-                    <div id="res-header" class="p-4 text-white text-center font-bold text-sm uppercase tracking-widest bg-gray-500">
-                        ESTADO DE LA SOLICITUD
-                    </div>
+                    <div id="res-header" class="p-4 text-white text-center font-bold text-sm uppercase tracking-widest bg-gray-500">ESTADO DE LA SOLICITUD</div>
                     <div class="p-6 bg-white/80 shadow-inner">
                         <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-sm mb-5">
                             <div class="text-gray-500 font-semibold border-b pb-1">Fecha Radicado:</div>
@@ -868,7 +674,7 @@
                         </div>
                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-100 shadow-inner">
                             <p class="text-[10px] uppercase font-bold text-gray-400 mb-2 flex items-center gap-1">
-                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                                 Observaciones de Nómina:
                             </p>
                             <p id="res-obs" class="text-sm text-gray-700 font-medium italic"></p>
@@ -880,13 +686,16 @@
     </div>
 
     <script>
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-yz9Z9-ufoQrzNUWwuTbWid5cRJoVf1Az3V982zz-Rso9K5AYNL3CPM-x0z6gi_YFNA/exec";
+        // ============================================================
+        // CONFIGURACIÓN: URL de tu Cloudflare Worker (proxy CORS)
+        // ============================================================
+        var GOOGLE_SCRIPT_URL = "https://fondo-rapi-proxy.diseno-rapiaseo.workers.dev";
 
+        // ============================================================
+        // VARIABLES GLOBALES
+        // ============================================================
         const captures = { 'cedula-front': null, 'cedula-back': null, 'selfie': null };
-
-        let cameraStream = null,
-            currentCaptureTarget = null,
-            currentFacingMode = 'environment';
+        let cameraStream = null, currentCaptureTarget = null, currentFacingMode = 'environment';
         const cameraModal = document.getElementById('camera-modal');
         const cameraVideo = document.getElementById('camera-video');
         const previewCanvas = document.createElement('canvas');
@@ -896,13 +705,16 @@
         const camLabel = document.getElementById('cam-modal-label');
         const camHint = document.getElementById('cam-hint-text');
         const camGuide = document.getElementById('cam-guide-shape');
+        let hasSigned = false, startTime = new Date().toLocaleString('es-CO'), userIp = "No detectada";
 
+        // ============================================================
+        // FUNCIONES DE CÁMARA
+        // ============================================================
         async function openCamera(target) {
             currentCaptureTarget = target;
             const isSelfie = target === 'selfie';
             currentFacingMode = isSelfie ? 'user' : 'environment';
-            camLabel.textContent = isSelfie ? '🤳 Selfie con Cédula' : target === 'cedula-front' ? '📷 Cédula — Cara Frontal' :
-                '📷 Cédula — Cara Posterior';
+            camLabel.textContent = isSelfie ? '🤳 Selfie con Cédula' : target === 'cedula-front' ? '📷 Cédula — Cara Frontal' : '📷 Cédula — Cara Posterior';
             camHint.textContent = isSelfie ? 'Sostén la cédula junto a tu rostro' : 'Centra la cédula dentro del marco blanco';
             camGuide.className = isSelfie ? 'guide-selfie' : 'guide-id';
             cameraModal.classList.remove('hidden');
@@ -932,8 +744,7 @@
             previewCanvas.width = cameraVideo.videoWidth || 1280;
             previewCanvas.height = cameraVideo.videoHeight || 960;
             const ctx2 = previewCanvas.getContext('2d');
-            if (currentFacingMode === 'user') { ctx2.translate(previewCanvas.width, 0);
-                ctx2.scale(-1, 1); }
+            if (currentFacingMode === 'user') { ctx2.translate(previewCanvas.width, 0); ctx2.scale(-1, 1); }
             ctx2.drawImage(cameraVideo, 0, 0, previewCanvas.width, previewCanvas.height);
             previewCanvas.toBlob(blob => {
                 saveCapture(currentCaptureTarget, blob);
@@ -942,8 +753,7 @@
         }
 
         function closeCameraModal() {
-            if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop());
-                cameraStream = null; }
+            if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; }
             cameraModal.classList.add('hidden');
         }
 
@@ -953,38 +763,28 @@
             const thumb = document.getElementById('thumb-' + target);
             const status = document.getElementById('status-' + target);
             const card = document.getElementById('card-' + target);
-            if (thumb) { thumb.src = url;
-                thumb.style.display = 'block'; }
-            if (status) { status.textContent = '✅ Capturado correctamente';
-                status.classList.add('text-green-600');
-                status.classList.remove('text-gray-400'); }
+            if (thumb) { thumb.src = url; thumb.style.display = 'block'; }
+            if (status) { status.textContent = '✅ Capturado correctamente'; status.classList.add('text-green-600'); status.classList.remove('text-gray-400'); }
             if (card) { card.classList.add('captured'); }
         }
 
         function handleFileUpload(input, target) {
             if (!input.files || !input.files[0]) return;
             const file = input.files[0];
-            if (file.size > 5.5 * 1024 * 1024) { alert("Archivo muy pesado (máx 5MB).");
-                return; }
+            if (file.size > 5.5 * 1024 * 1024) { alert("Archivo muy pesado (máx 5MB)."); return; }
             captures[target] = file;
             const card = document.getElementById('card-' + target);
             const status = document.getElementById('status-' + target);
             const thumb = document.getElementById('thumb-' + target);
             if (card) card.classList.add('captured');
-            if (status) { status.textContent = '✅ ' + file.name.substring(0, 22);
-                status.classList.add('text-green-600');
-                status.classList.remove('text-gray-400'); }
-            if (file.type.startsWith('image/') && thumb) { thumb.src = URL.createObjectURL(file);
-                thumb.style.display = 'block'; }
+            if (status) { status.textContent = '✅ ' + file.name.substring(0, 22); status.classList.add('text-green-600'); status.classList.remove('text-gray-400'); }
+            if (file.type.startsWith('image/') && thumb) { thumb.src = URL.createObjectURL(file); thumb.style.display = 'block'; }
         }
 
-        let hasSigned = false,
-            startTime = new Date().toLocaleString('es-CO'),
-            userIp = "No detectada";
-
-        function getRawMonto() { const val = document.getElementById('monto').value.replace(/\./g, ''); return val ? parseInt(
-                val) : 0; }
-
+        // ============================================================
+        // FUNCIONES DE MONTO Y SIMULACIÓN
+        // ============================================================
+        function getRawMonto() { const val = document.getElementById('monto').value.replace(/\./g, ''); return val ? parseInt(val) : 0; }
         function formatMoney(amount) { return '$ ' + Math.round(amount).toLocaleString('es-CO'); }
 
         window.handleMontoInput = function(input) {
@@ -997,16 +797,12 @@
         window.calculateSimulation = function() {
             const monto = getRawMonto();
             const cuotasSelect = document.getElementById('cuotas');
-
             if (monto === 500000) {
                 cuotasSelect.options[0].disabled = true;
-                if (cuotasSelect.value === "1") {
-                    cuotasSelect.value = "2";
-                }
+                if (cuotasSelect.value === "1") cuotasSelect.value = "2";
             } else {
                 cuotasSelect.options[0].disabled = false;
             }
-
             const cuotas = parseInt(cuotasSelect.value) || 1;
             const simBox = document.getElementById('simulacion-box');
             if (monto < 50000) { simBox.classList.add('hidden'); return; }
@@ -1016,80 +812,51 @@
             document.getElementById('sim-total-pagar').innerText = formatMoney(totalPagar);
         };
 
+        // ============================================================
+        // INICIALIZACIÓN
+        // ============================================================
         window.addEventListener('load', () => {
             checkDateAccess();
             fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => userIp = d.ip).catch(() => {});
         });
 
-        window.toggleLegalText = function() { document.getElementById('legal-content').classList.toggle('hidden'); };
-
-        window.checkDateAccess = function() {
-            const day = new Date().getDate();
-            const isFirstCut = (day >= 6 && day <= 10);
-            const isSecondCut = (day >= 21 && day <= 25);
-            const isAllowed = true;
-
-            if (isAllowed) {
-                document.getElementById('closed-screen').classList.add('hidden');
-                document.getElementById('closed-screen').classList.remove('flex');
-                document.getElementById('form-content').classList.remove('hidden');
-                const msg = document.getElementById('date-message-container');
-                if (isFirstCut) {
-                    msg.classList.remove('hidden');
-                    msg.innerHTML =
-                        `<div class="bg-blue-100 border-l-4 border-blue-600 text-blue-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">📅 CORTE 1: (6 al 10)</div>`;
-                } else if (isSecondCut) {
-                    msg.classList.remove('hidden');
-                    msg.innerHTML =
-                        `<div class="bg-orange-100 border-l-4 border-orange-500 text-orange-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">⚠️ CORTE 2: (21 al 25)</div>`;
-                }
-            } else {
-                document.getElementById('closed-screen').classList.remove('hidden');
-                document.getElementById('closed-screen').classList.add('flex');
-                document.getElementById('form-content').classList.add('hidden');
-            }
-        };
-
+        // ============================================================
+        // CONTROL DE PASOS
+        // ============================================================
         window.showStep = function(n) {
-            document.querySelectorAll('.step').forEach(e => {
-                e.classList.remove('active');
-                e.style.display = 'none';
-            });
+            document.querySelectorAll('.step').forEach(e => { e.classList.remove('active'); e.style.display = 'none'; });
             const step = document.getElementById('step' + n);
             step.classList.add('active');
             step.style.display = 'block';
             for (let i = 1; i <= 4; i++) {
                 const prog = document.getElementById('prog-' + i);
-                if (i <= n) {
-                    prog.classList.add('active');
-                } else {
-                    prog.classList.remove('active');
-                }
+                if (i <= n) prog.classList.add('active'); else prog.classList.remove('active');
             }
-            // Si se muestra el paso 4, abrir automáticamente el modal legal
-            if (n === 4) {
-                abrirModalLegal();
-            }
+            if (n === 4) { abrirModalLegal(); }
         };
+        window.prevStep = function(n) { showStep(n); };
 
+        // ============================================================
+        // VALIDACIÓN PASO 1
+        // ============================================================
         window.validateStep1 = function() {
             if (!document.getElementById('accept').checked) return alert("Debe aceptar la política.");
             showStep(2);
         };
 
+        // ============================================================
+        // VALIDACIÓN PASO 2 (Datos)
+        // ============================================================
         window.validateStep2 = async function() {
             const nombre = document.getElementById('nombre').value.trim();
             const cedula = document.getElementById('cedula').value.trim();
             const email = document.getElementById('email').value.trim();
             const montoRaw = document.getElementById('monto').value.trim();
-
             if (!nombre || !cedula || !email || !montoRaw) return alert("Complete todos los campos obligatorios.");
             if (!email.includes('@')) return alert("El correo electrónico no es válido.");
-
             const monto = getRawMonto();
             if (monto < 100000) return alert("❌ El monto mínimo es $100.000 pesos.");
             if (monto > 500000) return alert("❌ El monto máximo permitido es $500.000 pesos.");
-
             const cuotas = parseInt(document.getElementById('cuotas').value);
             if (monto === 500000 && cuotas === 1) {
                 return alert("❌ Para montos de $500.000 pesos, debe seleccionar un plazo mínimo de 2 cuotas quincenales.");
@@ -1100,44 +867,60 @@
             btn.innerText = "Verificando...";
             btn.style.opacity = '0.6';
             document.getElementById('loadingModal').classList.remove('hidden');
-            document.getElementById('loadingText').innerText = "Verificando créditos activos...";
+            document.getElementById('loadingText').innerText = "Verificando empleado...";
 
             try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                // Verificar empleado
+                const empResponse = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    redirect: 'follow',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'checkEmployee', cedula: cedula })
+                });
+                const empResult = await empResponse.json();
+                if (!empResult.found) {
+                    document.getElementById('loadingModal').classList.add('hidden');
+                    btn.disabled = false;
+                    btn.innerText = "Siguiente";
+                    btn.style.opacity = '1';
+                    alert('❌ Su cédula no se encuentra registrada en RAPIASEO SAS. Por favor, verifique con el área de nómina.');
+                    return;
+                }
+
+                // Verificar crédito activo
+                document.getElementById('loadingText').innerText = "Verificando créditos activos...";
+                const credResponse = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
                 });
-
-                const textoRaw = await response.text();
+                const credResult = await credResponse.json();
 
                 document.getElementById('loadingModal').classList.add('hidden');
                 btn.disabled = false;
                 btn.innerText = "Siguiente";
                 btn.style.opacity = '1';
 
-                let resultado = {};
-                try { resultado = JSON.parse(textoRaw); } catch (parseErr) { resultado = {}; }
-
-                if (resultado.hasActiveCredit === true) {
-                    document.getElementById('modal-fecha-venc').innerText = resultado.fechaVencimiento || "N/A";
-                    document.getElementById('modal-dias-rest').innerText = resultado.diasRestantes || "N/A";
+                if (credResult.hasActiveCredit === true) {
+                    document.getElementById('modal-fecha-venc').innerText = credResult.fechaVencimiento || "N/A";
+                    document.getElementById('modal-dias-rest').innerText = credResult.diasRestantes || "N/A";
                     document.getElementById('modal-credito-activo').classList.remove('hidden');
                     return;
                 }
 
                 showStep(3);
-
             } catch (err) {
                 document.getElementById('loadingModal').classList.add('hidden');
                 btn.disabled = false;
                 btn.innerText = "Siguiente";
                 btn.style.opacity = '1';
-                showStep(3);
+                console.error(err);
+                alert("Error en la verificación. Intenta de nuevo.");
             }
         };
 
+        // ============================================================
+        // VALIDACIÓN PASO 3 (Documentos)
+        // ============================================================
         window.validateStep3 = function() {
             if (!captures['cedula-front']) return alert("Falta la foto de la cara FRONTAL de la cédula.");
             if (!captures['cedula-back']) return alert("Falta la foto de la cara POSTERIOR de la cédula.");
@@ -1146,8 +929,9 @@
             setTimeout(resizeCanvas, 100);
         };
 
-        window.prevStep = function(n) { showStep(n); };
-
+        // ============================================================
+        // FIRMA DIGITAL (Canvas)
+        // ============================================================
         const canvas = document.getElementById('signature-pad');
         const ctx = canvas.getContext('2d');
         const wrapper = document.getElementById('signature-wrapper');
@@ -1167,37 +951,16 @@
             let y = e.touches ? e.touches[0].clientY : e.clientY;
             return { x: x - r.left, y: y - r.top };
         }
-        canvas.addEventListener('mousedown', e => { if (!document.getElementById('accept-legal-step3').checked) return;
-            isDrawing = true;
-            hasSigned = true;
-            ctx.beginPath();
-            const p = getPos(e);
-            ctx.moveTo(p.x, p.y); });
-        canvas.addEventListener('mousemove', e => { if (!isDrawing) return;
-            ctx.lineWidth = 2;
-            ctx.lineCap = 'round';
-            const p = getPos(e);
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke(); });
+        canvas.addEventListener('mousedown', e => { if (!document.getElementById('accept-legal-step3').checked) return; isDrawing = true; hasSigned = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
+        canvas.addEventListener('mousemove', e => { if (!isDrawing) return; ctx.lineWidth = 2; ctx.lineCap = 'round'; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
         canvas.addEventListener('mouseup', () => { isDrawing = false; });
-        canvas.addEventListener('touchstart', e => { if (!document.getElementById('accept-legal-step3').checked) return;
-            e.preventDefault();
-            isDrawing = true;
-            hasSigned = true;
-            ctx.beginPath();
-            const p = getPos(e);
-            ctx.moveTo(p.x, p.y); }, { passive: false });
-        canvas.addEventListener('touchmove', e => { if (!isDrawing) return;
-            e.preventDefault();
-            ctx.lineWidth = 2;
-            ctx.lineCap = 'round';
-            const p = getPos(e);
-            ctx.lineTo(p.x, p.y);
-            ctx.stroke(); }, { passive: false });
-        window.clearSignature = function() { ctx.clearRect(0, 0, canvas.width * 2, canvas.height * 2);
-            ctx.beginPath();
-            hasSigned = false; };
+        canvas.addEventListener('touchstart', e => { if (!document.getElementById('accept-legal-step3').checked) return; e.preventDefault(); isDrawing = true; hasSigned = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }, { passive: false });
+        canvas.addEventListener('touchmove', e => { if (!isDrawing) return; e.preventDefault(); ctx.lineWidth = 2; ctx.lineCap = 'round'; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }, { passive: false });
+        window.clearSignature = function() { ctx.clearRect(0, 0, canvas.width * 2, canvas.height * 2); ctx.beginPath(); hasSigned = false; };
 
+        // ============================================================
+        // UTILIDADES: BLOB A BASE64
+        // ============================================================
         const blobToBase64 = blob => new Promise((resolve, reject) => {
             const r = new FileReader();
             r.readAsDataURL(blob);
@@ -1205,12 +968,13 @@
             r.onerror = reject;
         });
 
+        // ============================================================
+        // GENERAR PDF (Legal)
+        // ============================================================
         function generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-            const W = 210,
-                margin = 20,
-                contentW = W - margin * 2;
+            const W = 210, margin = 20, contentW = W - margin * 2;
             let y = 20;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(14);
@@ -1218,10 +982,9 @@
             y += 10;
             doc.setFont('helvetica', 'normal');
             doc.setFontSize(9);
-            doc.text('Fecha de solicitud: ' + new Date().toLocaleString('es-CO', { dateStyle: 'long',
-                timeStyle: 'short' }), margin, y);
+            doc.text('Fecha de solicitud: ' + new Date().toLocaleString('es-CO', { dateStyle: 'long', timeStyle: 'short' }), margin, y);
             y += 10;
-            doc.setFillColor(240, 240, 240);
+            doc.setFillColor(240,240,240);
             doc.rect(margin, y, contentW, 8, 'F');
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10);
@@ -1239,7 +1002,7 @@
             y += 7;
             doc.text('Cuenta Desembolso: Registrada en la nómina de la empresa', margin, y);
             y += 12;
-            doc.setFillColor(240, 240, 240);
+            doc.setFillColor(240,240,240);
             doc.rect(margin, y, contentW, 8, 'F');
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10);
@@ -1254,8 +1017,7 @@
             doc.setFont('helvetica', 'bold');
             doc.text('VALOR APROXIMADO POR CUOTA: $ ' + Math.round(valorCuota).toLocaleString('es-CO'), margin, y);
             y += 7;
-            doc.text('TOTAL A PAGAR (Inc. Intereses + Admin): $ ' + Math.round(totalPagar).toLocaleString('es-CO'), margin,
-                y);
+            doc.text('TOTAL A PAGAR (Inc. Intereses + Admin): $ ' + Math.round(totalPagar).toLocaleString('es-CO'), margin, y);
             y += 14;
             doc.setFont('helvetica', 'bold');
             doc.setFontSize(10);
@@ -1265,9 +1027,7 @@
             doc.setFontSize(9);
             const montoFmt = '$ ' + Math.round(totalPagar).toLocaleString('es-CO');
             const cuotaFmt = '$ ' + Math.round(valorCuota).toLocaleString('es-CO');
-            const p1 = 'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del presente documento me permito autorizar de manera expresa e irrevocable a la citada sociedad para que descuente de mis salarios quincenales y/o de mis prestaciones sociales la suma total de (' +
-                montoFmt + ') PESOS M/CTE, correspondientes al capital solicitado más intereses y costos administrativos, diferido en ' +
-                cuotas + ' cuota(s) quincenales de aproximadamente (' + cuotaFmt + ') PESOS M/CTE.';
+            const p1 = 'Identificado como aparece al pie de mi firma, obrando en mi calidad de empleado de RAPIASEO SAS, por medio del presente documento me permito autorizar de manera expresa e irrevocable a la citada sociedad para que descuente de mis salarios quincenales y/o de mis prestaciones sociales la suma total de (' + montoFmt + ') PESOS M/CTE, correspondientes al capital solicitado más intereses y costos administrativos, diferido en ' + cuotas + ' cuota(s) quincenales de aproximadamente (' + cuotaFmt + ') PESOS M/CTE.';
             const p2 = 'Firmo en señal de aceptación del referido descuento para que se afecten salarios y prestaciones sociales en vigencia de mi contrato de trabajo, y de igual manera, autorizo a la sociedad RAPIASEO SAS para que en caso de terminación del vínculo laboral, por cualquier causa o motivo, el saldo insoluto que resultare de la deuda, sea descontado de mi liquidación definitiva.';
             const l1 = doc.splitTextToSize(p1, contentW);
             doc.text(l1, margin, y);
@@ -1290,6 +1050,9 @@
             return doc;
         }
 
+        // ============================================================
+        // SOLICITUD DE CÓDIGO DE VERIFICACIÓN
+        // ============================================================
         window.requestVerificationCode = function() {
             const email = document.getElementById('email').value;
             const nombre = document.getElementById('nombre').value;
@@ -1301,7 +1064,6 @@
             btn.disabled = true;
             fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    redirect: 'follow',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'sendCode', email, nombre, userIp })
                 })
@@ -1326,6 +1088,9 @@
                 });
         };
 
+        // ============================================================
+        // ENVÍO FINAL DE LA SOLICITUD
+        // ============================================================
         window.submitForm = async function() {
             const codeInput = document.getElementById('verification-code').value;
             if (!document.getElementById('accept-legal-step3').checked) return alert("Acepte la autorización.");
@@ -1368,7 +1133,6 @@
                 };
                 fetch(GOOGLE_SCRIPT_URL, {
                         method: 'POST',
-                        redirect: 'follow',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                         body: JSON.stringify(formData)
                     })
@@ -1405,8 +1169,7 @@
                     .catch((error) => {
                         document.getElementById('loadingModal').classList.add('hidden');
                         let msg = "Error enviando datos.";
-                        if (error.message && error.message.includes("QUOTA")) msg =
-                            "Límite de correos alcanzado. Intente mañana.";
+                        if (error.message && error.message.includes("QUOTA")) msg = "Límite de correos alcanzado. Intente mañana.";
                         alert(msg);
                     });
             } catch (err) {
@@ -1415,13 +1178,14 @@
             }
         };
 
-        // ========== PESTAÑAS Y CONSULTA ==========
+        // ============================================================
+        // FUNCIONES DE PESTAÑAS Y CONSULTA
+        // ============================================================
         window.switchTab = function(tab) {
             const btnSolicitar = document.getElementById('tab-solicitar');
             const btnConsultar = document.getElementById('tab-consultar');
             const secSolicitar = document.getElementById('seccion-solicitar');
             const secConsultar = document.getElementById('seccion-consultar');
-
             if (tab === 'solicitar') {
                 btnSolicitar.classList.add('active');
                 btnConsultar.classList.remove('active');
@@ -1438,44 +1202,29 @@
         window.consultarEstado = async function() {
             const cedula = document.getElementById('cedula-consulta').value.trim();
             if (!cedula) return alert("Por favor ingresa tu número de cédula.");
-
             document.getElementById('loadingModal').classList.remove('hidden');
             document.getElementById('loadingText').innerText = "Buscando solicitud...";
             document.getElementById('resultado-consulta').classList.add('hidden');
-
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    redirect: 'follow',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'checkStatus', cedula: cedula })
                 });
-
                 const data = await response.json();
                 document.getElementById('loadingModal').classList.add('hidden');
-
                 if (data.found) {
                     document.getElementById('res-fecha').innerText = data.fecha;
                     document.getElementById('res-tipo').innerText = data.tipo;
-                    document.getElementById('res-monto').innerText = "$ " + parseInt(data.monto).toLocaleString(
-                        'es-CO');
-                    document.getElementById('res-obs').innerText = data.observacion ||
-                        "No hay observaciones registradas.";
-
+                    document.getElementById('res-monto').innerText = "$ " + parseInt(data.monto).toLocaleString('es-CO');
+                    document.getElementById('res-obs').innerText = data.observacion || "No hay observaciones registradas.";
                     const headerInfo = document.getElementById('res-header');
                     const estadoText = data.estado ? data.estado.toUpperCase() : "EN REVISIÓN";
                     headerInfo.innerText = estadoText;
-
-                    headerInfo.className =
-                        "p-4 text-white text-center font-bold text-sm uppercase tracking-widest ";
-                    if (estadoText.includes('APROBADO')) {
-                        headerInfo.classList.add('bg-green-600');
-                    } else if (estadoText.includes('DENEGADO') || estadoText.includes('RECHAZADO')) {
-                        headerInfo.classList.add('bg-red-600');
-                    } else {
-                        headerInfo.classList.add('bg-yellow-500');
-                    }
-
+                    headerInfo.className = "p-4 text-white text-center font-bold text-sm uppercase tracking-widest ";
+                    if (estadoText.includes('APROBADO')) headerInfo.classList.add('bg-green-600');
+                    else if (estadoText.includes('DENEGADO') || estadoText.includes('RECHAZADO')) headerInfo.classList.add('bg-red-600');
+                    else headerInfo.classList.add('bg-yellow-500');
                     document.getElementById('resultado-consulta').classList.remove('hidden');
                 } else {
                     alert(data.message);
@@ -1486,27 +1235,54 @@
             }
         };
 
-        // ========== FUNCIONES DEL MODAL LEGAL ==========
+        // ============================================================
+        // FUNCIONES DEL MODAL LEGAL
+        // ============================================================
         window.abrirModalLegal = function() {
             document.getElementById('modal-legal').classList.remove('hidden');
             document.getElementById('accept-legal-modal').checked = false;
             document.getElementById('btn-aceptar-legal').disabled = true;
             document.getElementById('btn-aceptar-legal').style.opacity = '0.5';
         };
-
         window.aceptarLegal = function() {
             document.getElementById('modal-legal').classList.add('hidden');
             document.getElementById('accept-legal-step3').checked = true;
-            document.getElementById('accept-legal-step3').disabled = false; // Se habilita visualmente
-            // Habilitar firma
+            document.getElementById('accept-legal-step3').disabled = false;
         };
-
         document.getElementById('accept-legal-modal').addEventListener('change', function() {
             const btn = document.getElementById('btn-aceptar-legal');
             btn.disabled = !this.checked;
             btn.style.opacity = this.checked ? '1' : '0.5';
             btn.style.cursor = this.checked ? 'pointer' : 'not-allowed';
         });
+
+        // ============================================================
+        // FUNCIÓN DE CIERRE DE FECHAS (CORTES)
+        // ============================================================
+        window.checkDateAccess = function() {
+            const day = new Date().getDate();
+            const isFirstCut = (day >= 6 && day <= 10);
+            const isSecondCut = (day >= 21 && day <= 25);
+            const isAllowed = true; // cambiar a false para simular cierre
+            if (isAllowed) {
+                document.getElementById('closed-screen').classList.add('hidden');
+                document.getElementById('closed-screen').classList.remove('flex');
+                document.getElementById('form-content').classList.remove('hidden');
+                const msg = document.getElementById('date-message-container');
+                if (isFirstCut) {
+                    msg.classList.remove('hidden');
+                    msg.innerHTML = `<div class="bg-blue-100 border-l-4 border-blue-600 text-blue-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">📅 CORTE 1: (6 al 10)</div>`;
+                } else if (isSecondCut) {
+                    msg.classList.remove('hidden');
+                    msg.innerHTML = `<div class="bg-orange-100 border-l-4 border-orange-500 text-orange-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">⚠️ CORTE 2: (21 al 25)</div>`;
+                }
+            } else {
+                document.getElementById('closed-screen').classList.remove('hidden');
+                document.getElementById('closed-screen').classList.add('flex');
+                document.getElementById('form-content').classList.add('hidden');
+            }
+        };
+        window.toggleLegalText = function() { document.getElementById('legal-content').classList.toggle('hidden'); };
     </script>
 </body>
 </html>
