@@ -557,7 +557,7 @@
         </div>
     </div>
 
-    <!-- ===== MODAL LEGAL ===== -->
+    <!-- ===== MODAL LEGAL (nuevo) ===== -->
     <div id="modal-legal" class="modal-overlay hidden">
         <div class="modal-card modal-pop">
             <h3 class="text-lg font-bold text-gray-900 mb-3">Autorización de Descuento</h3>
@@ -658,7 +658,7 @@
                         </div>
                     </div>
 
-                    <!-- PASO 2: Datos -->
+                    <!-- PASO 2: Datos (oculto inicialmente) -->
                     <div id="step2" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-4 text-gray-800 uppercase tracking-wide border-b pb-2">Configuración de Solicitud</h2>
@@ -731,7 +731,7 @@
                         </div>
                     </div>
 
-                    <!-- PASO 3: Docs -->
+                    <!-- PASO 3: Docs (oculto) -->
                     <div id="step3" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-1 text-gray-800 uppercase tracking-wide border-b pb-2">Verificación de Identidad</h2>
@@ -798,7 +798,7 @@
                         </div>
                     </div>
 
-                    <!-- PASO 4: Firma -->
+                    <!-- PASO 4: Firma (oculto) -->
                     <div id="step4" class="step" style="display:none;">
                         <div class="neo-panel">
                             <h2 class="text-sm font-bold mb-2 text-gray-800 uppercase tracking-wide">Autorización y Firma</h2>
@@ -880,15 +880,10 @@
     </div>
 
     <script>
-        // ============================================================
-        // CONFIGURACIÓN: URL del proxy CORS (puedes cambiarlo si quieres)
-        // ============================================================
-        var GOOGLE_SCRIPT_URL = "https://corsproxy.io/?" + encodeURIComponent("https://script.google.com/macros/s/AKfycbwVHW8pg5U6GXrgo1AcVi8HhGCV3BColY0I2J5BgbPIqhzvgv5XAR_pkLXHrcFxYlV5cA/exec");
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-yz9Z9-ufoQrzNUWwuTbWid5cRJoVf1Az3V982zz-Rso9K5AYNL3CPM-x0z6gi_YFNA/exec";
 
-        // ============================================================
-        // VARIABLES GLOBALES
-        // ============================================================
         const captures = { 'cedula-front': null, 'cedula-back': null, 'selfie': null };
+
         let cameraStream = null,
             currentCaptureTarget = null,
             currentFacingMode = 'environment';
@@ -901,13 +896,7 @@
         const camLabel = document.getElementById('cam-modal-label');
         const camHint = document.getElementById('cam-hint-text');
         const camGuide = document.getElementById('cam-guide-shape');
-        let hasSigned = false,
-            startTime = new Date().toLocaleString('es-CO'),
-            userIp = "No detectada";
 
-        // ============================================================
-        // FUNCIONES DE CÁMARA
-        // ============================================================
         async function openCamera(target) {
             currentCaptureTarget = target;
             const isSelfie = target === 'selfie';
@@ -989,9 +978,10 @@
                 thumb.style.display = 'block'; }
         }
 
-        // ============================================================
-        // FUNCIONES DE MONTO Y SIMULACIÓN
-        // ============================================================
+        let hasSigned = false,
+            startTime = new Date().toLocaleString('es-CO'),
+            userIp = "No detectada";
+
         function getRawMonto() { const val = document.getElementById('monto').value.replace(/\./g, ''); return val ? parseInt(
                 val) : 0; }
 
@@ -1026,17 +1016,40 @@
             document.getElementById('sim-total-pagar').innerText = formatMoney(totalPagar);
         };
 
-        // ============================================================
-        // INICIALIZACIÓN
-        // ============================================================
         window.addEventListener('load', () => {
             checkDateAccess();
             fetch('https://api.ipify.org?format=json').then(r => r.json()).then(d => userIp = d.ip).catch(() => {});
         });
 
-        // ============================================================
-        // CONTROL DE PASOS
-        // ============================================================
+        window.toggleLegalText = function() { document.getElementById('legal-content').classList.toggle('hidden'); };
+
+        window.checkDateAccess = function() {
+            const day = new Date().getDate();
+            const isFirstCut = (day >= 6 && day <= 10);
+            const isSecondCut = (day >= 21 && day <= 25);
+            const isAllowed = true;
+
+            if (isAllowed) {
+                document.getElementById('closed-screen').classList.add('hidden');
+                document.getElementById('closed-screen').classList.remove('flex');
+                document.getElementById('form-content').classList.remove('hidden');
+                const msg = document.getElementById('date-message-container');
+                if (isFirstCut) {
+                    msg.classList.remove('hidden');
+                    msg.innerHTML =
+                        `<div class="bg-blue-100 border-l-4 border-blue-600 text-blue-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">📅 CORTE 1: (6 al 10)</div>`;
+                } else if (isSecondCut) {
+                    msg.classList.remove('hidden');
+                    msg.innerHTML =
+                        `<div class="bg-orange-100 border-l-4 border-orange-500 text-orange-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">⚠️ CORTE 2: (21 al 25)</div>`;
+                }
+            } else {
+                document.getElementById('closed-screen').classList.remove('hidden');
+                document.getElementById('closed-screen').classList.add('flex');
+                document.getElementById('form-content').classList.add('hidden');
+            }
+        };
+
         window.showStep = function(n) {
             document.querySelectorAll('.step').forEach(e => {
                 e.classList.remove('active');
@@ -1053,24 +1066,17 @@
                     prog.classList.remove('active');
                 }
             }
+            // Si se muestra el paso 4, abrir automáticamente el modal legal
             if (n === 4) {
                 abrirModalLegal();
             }
         };
 
-        window.prevStep = function(n) { showStep(n); };
-
-        // ============================================================
-        // VALIDACIÓN PASO 1
-        // ============================================================
         window.validateStep1 = function() {
             if (!document.getElementById('accept').checked) return alert("Debe aceptar la política.");
             showStep(2);
         };
 
-        // ============================================================
-        // VALIDACIÓN PASO 2 (Datos)
-        // ============================================================
         window.validateStep2 = async function() {
             const nombre = document.getElementById('nombre').value.trim();
             const cedula = document.getElementById('cedula').value.trim();
@@ -1094,42 +1100,29 @@
             btn.innerText = "Verificando...";
             btn.style.opacity = '0.6';
             document.getElementById('loadingModal').classList.remove('hidden');
-            document.getElementById('loadingText').innerText = "Verificando empleado...";
+            document.getElementById('loadingText').innerText = "Verificando créditos activos...";
 
             try {
-                // Verificar empleado
-                const empResponse = await fetch(GOOGLE_SCRIPT_URL, {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'checkEmployee', cedula: cedula })
-                });
-                const empResult = await empResponse.json();
-                if (!empResult.found) {
-                    document.getElementById('loadingModal').classList.add('hidden');
-                    btn.disabled = false;
-                    btn.innerText = "Siguiente";
-                    btn.style.opacity = '1';
-                    alert('❌ Su cédula no se encuentra registrada en RAPIASEO SAS. Por favor, verifique con el área de nómina.');
-                    return;
-                }
-
-                // Verificar crédito activo
-                document.getElementById('loadingText').innerText = "Verificando créditos activos...";
-                const credResponse = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
+                    redirect: 'follow',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'checkActiveCredit', cedula, email })
                 });
-                const credResult = await credResponse.json();
+
+                const textoRaw = await response.text();
 
                 document.getElementById('loadingModal').classList.add('hidden');
                 btn.disabled = false;
                 btn.innerText = "Siguiente";
                 btn.style.opacity = '1';
 
-                if (credResult.hasActiveCredit === true) {
-                    document.getElementById('modal-fecha-venc').innerText = credResult.fechaVencimiento || "N/A";
-                    document.getElementById('modal-dias-rest').innerText = credResult.diasRestantes || "N/A";
+                let resultado = {};
+                try { resultado = JSON.parse(textoRaw); } catch (parseErr) { resultado = {}; }
+
+                if (resultado.hasActiveCredit === true) {
+                    document.getElementById('modal-fecha-venc').innerText = resultado.fechaVencimiento || "N/A";
+                    document.getElementById('modal-dias-rest').innerText = resultado.diasRestantes || "N/A";
                     document.getElementById('modal-credito-activo').classList.remove('hidden');
                     return;
                 }
@@ -1141,14 +1134,10 @@
                 btn.disabled = false;
                 btn.innerText = "Siguiente";
                 btn.style.opacity = '1';
-                console.error(err);
-                alert("Error en la verificación. Intenta de nuevo.");
+                showStep(3);
             }
         };
 
-        // ============================================================
-        // VALIDACIÓN PASO 3 (Documentos)
-        // ============================================================
         window.validateStep3 = function() {
             if (!captures['cedula-front']) return alert("Falta la foto de la cara FRONTAL de la cédula.");
             if (!captures['cedula-back']) return alert("Falta la foto de la cara POSTERIOR de la cédula.");
@@ -1157,9 +1146,8 @@
             setTimeout(resizeCanvas, 100);
         };
 
-        // ============================================================
-        // FIRMA DIGITAL (Canvas)
-        // ============================================================
+        window.prevStep = function(n) { showStep(n); };
+
         const canvas = document.getElementById('signature-pad');
         const ctx = canvas.getContext('2d');
         const wrapper = document.getElementById('signature-wrapper');
@@ -1210,9 +1198,6 @@
             ctx.beginPath();
             hasSigned = false; };
 
-        // ============================================================
-        // UTILIDADES: BLOB A BASE64
-        // ============================================================
         const blobToBase64 = blob => new Promise((resolve, reject) => {
             const r = new FileReader();
             r.readAsDataURL(blob);
@@ -1220,9 +1205,6 @@
             r.onerror = reject;
         });
 
-        // ============================================================
-        // GENERAR PDF (Legal)
-        // ============================================================
         function generateLegalPDF(d, montoInt, cuotas, totalPagar, valorCuota) {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ unit: 'mm', format: 'a4' });
@@ -1308,9 +1290,6 @@
             return doc;
         }
 
-        // ============================================================
-        // SOLICITUD DE CÓDIGO DE VERIFICACIÓN
-        // ============================================================
         window.requestVerificationCode = function() {
             const email = document.getElementById('email').value;
             const nombre = document.getElementById('nombre').value;
@@ -1322,6 +1301,7 @@
             btn.disabled = true;
             fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    redirect: 'follow',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'sendCode', email, nombre, userIp })
                 })
@@ -1346,9 +1326,6 @@
                 });
         };
 
-        // ============================================================
-        // ENVÍO FINAL DE LA SOLICITUD
-        // ============================================================
         window.submitForm = async function() {
             const codeInput = document.getElementById('verification-code').value;
             if (!document.getElementById('accept-legal-step3').checked) return alert("Acepte la autorización.");
@@ -1391,6 +1368,7 @@
                 };
                 fetch(GOOGLE_SCRIPT_URL, {
                         method: 'POST',
+                        redirect: 'follow',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                         body: JSON.stringify(formData)
                     })
@@ -1437,9 +1415,7 @@
             }
         };
 
-        // ============================================================
-        // FUNCIONES DE PESTAÑAS Y CONSULTA
-        // ============================================================
+        // ========== PESTAÑAS Y CONSULTA ==========
         window.switchTab = function(tab) {
             const btnSolicitar = document.getElementById('tab-solicitar');
             const btnConsultar = document.getElementById('tab-consultar');
@@ -1470,6 +1446,7 @@
             try {
                 const response = await fetch(GOOGLE_SCRIPT_URL, {
                     method: 'POST',
+                    redirect: 'follow',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'checkStatus', cedula: cedula })
                 });
@@ -1509,9 +1486,7 @@
             }
         };
 
-        // ============================================================
-        // FUNCIONES DEL MODAL LEGAL
-        // ============================================================
+        // ========== FUNCIONES DEL MODAL LEGAL ==========
         window.abrirModalLegal = function() {
             document.getElementById('modal-legal').classList.remove('hidden');
             document.getElementById('accept-legal-modal').checked = false;
@@ -1522,7 +1497,8 @@
         window.aceptarLegal = function() {
             document.getElementById('modal-legal').classList.add('hidden');
             document.getElementById('accept-legal-step3').checked = true;
-            document.getElementById('accept-legal-step3').disabled = false;
+            document.getElementById('accept-legal-step3').disabled = false; // Se habilita visualmente
+            // Habilitar firma
         };
 
         document.getElementById('accept-legal-modal').addEventListener('change', function() {
@@ -1531,37 +1507,6 @@
             btn.style.opacity = this.checked ? '1' : '0.5';
             btn.style.cursor = this.checked ? 'pointer' : 'not-allowed';
         });
-
-        // ============================================================
-        // FUNCIÓN DE CIERRE DE FECHAS (CORTES)
-        // ============================================================
-        window.checkDateAccess = function() {
-            const day = new Date().getDate();
-            const isFirstCut = (day >= 6 && day <= 10);
-            const isSecondCut = (day >= 21 && day <= 25);
-            const isAllowed = true;
-
-            if (isAllowed) {
-                document.getElementById('closed-screen').classList.add('hidden');
-                document.getElementById('closed-screen').classList.remove('flex');
-                document.getElementById('form-content').classList.remove('hidden');
-                const msg = document.getElementById('date-message-container');
-                if (isFirstCut) {
-                    msg.classList.remove('hidden');
-                    msg.innerHTML =
-                        `<div class="bg-blue-100 border-l-4 border-blue-600 text-blue-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">📅 CORTE 1: (6 al 10)</div>`;
-                } else if (isSecondCut) {
-                    msg.classList.remove('hidden');
-                    msg.innerHTML =
-                        `<div class="bg-orange-100 border-l-4 border-orange-500 text-orange-800 p-4 m-4 mb-0 rounded shadow-sm text-sm font-bold">⚠️ CORTE 2: (21 al 25)</div>`;
-                }
-            } else {
-                document.getElementById('closed-screen').classList.remove('hidden');
-                document.getElementById('closed-screen').classList.add('flex');
-                document.getElementById('form-content').classList.add('hidden');
-            }
-        };
-        window.toggleLegalText = function() { document.getElementById('legal-content').classList.toggle('hidden'); };
     </script>
 </body>
 </html>
